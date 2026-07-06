@@ -1,0 +1,5 @@
+galaxy_info:
+  author: DevOps Architect
+  description: Configures host-level UFW security boundaries
+  license: MIT
+dependencies: []

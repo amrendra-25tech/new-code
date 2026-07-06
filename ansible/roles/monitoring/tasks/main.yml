@@ -1,0 +1,35 @@
+---
+- name: Verify Prometheus service HTTP endpoint
+  uri:
+    url: "http://localhost:{{ prometheus_port }}/-/healthy"
+    status_code: 200
+  register: prometheus_health
+  until: prometheus_health.status == 200
+  retries: 12
+  delay: 5
+
+- name: Verify Grafana service HTTP endpoint
+  uri:
+    url: "http://localhost:{{ grafana_port }}/api/health"
+    status_code: 200
+  register: grafana_health
+  until: grafana_health.status == 200
+  retries: 12
+  delay: 5
+
+- name: Verify Node Exporter metrics endpoint
+  uri:
+    url: "http://localhost:{{ node_exporter_port }}/metrics"
+    status_code: 200
+  register: node_exporter_health
+  until: node_exporter_health.status == 200
+  retries: 12
+  delay: 5
+
+- name: Display Monitoring Stack Deployment Health Summary
+  debug:
+    msg:
+      - "=== ENTERPRISE MONITORING STACK DEPLOYED SUCCESSFULLY ==="
+      - "Prometheus Status: HEALTHY (Port {{ prometheus_port }})"
+      - "Grafana Status:    HEALTHY (Port {{ grafana_port }})"
+      - "Node Exporter:     ACTIVE  (Port {{ node_exporter_port }})"

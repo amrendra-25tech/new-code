@@ -1,0 +1,6 @@
+galaxy_info:
+  author: DevOps Architect
+  description: Common baseline package installation and server setup
+  license: MIT
+  min_ansible_version: "2.9"
+dependencies: []

@@ -1,0 +1,5 @@
+galaxy_info:
+  author: DevOps Architect
+  description: Installs and configures Docker container runtime
+  license: MIT
+dependencies: []

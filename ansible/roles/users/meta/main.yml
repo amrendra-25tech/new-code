@@ -1,0 +1,5 @@
+galaxy_info:
+  author: DevOps Architect
+  description: Manages Linux system users and sudoer permissions
+  license: MIT
+dependencies: []

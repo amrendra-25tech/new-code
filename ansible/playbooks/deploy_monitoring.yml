@@ -1,0 +1,13 @@
+---
+- name: Deploy Complete Enterprise Monitoring Stack
+  hosts: monitoring
+  become: yes
+  roles:
+    - common
+    - users
+    - firewall
+    - docker
+    - node_exporter
+    - prometheus
+    - grafana
+    - monitoring

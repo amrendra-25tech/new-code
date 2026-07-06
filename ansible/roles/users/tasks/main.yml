@@ -1,0 +1,21 @@
+---
+- name: Ensure devops group exists
+  group:
+    name: devops
+    state: present
+
+- name: Create devops user
+  user:
+    name: "{{ devops_admin_user }}"
+    group: devops
+    groups: sudo
+    append: yes
+    shell: /bin/bash
+    create_home: yes
+
+- name: Configure passwordless sudo for devops user
+  copy:
+    content: "{{ devops_admin_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    dest: "/etc/sudoers.d/{{ devops_admin_user }}"
+    mode: '0440'
+    validate: 'visudo -cf %s'

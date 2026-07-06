@@ -1,0 +1,80 @@
+---
+- name: Install prerequisite APT packages
+  apt:
+    name:
+      - apt-transport-https
+      - software-properties-common
+      - wget
+    state: present
+
+- name: Add Grafana GPG key
+  apt_key:
+    url: https://apt.grafana.com/gpg.key
+    state: present
+
+- name: Add Grafana APT repository
+  apt_repository:
+    repo: "deb https://apt.grafana.com stable main"
+    state: present
+
+- name: Install Grafana package
+  apt:
+    name: grafana
+    state: present
+    update_cache: yes
+
+- name: Set Grafana Admin credentials in grafana.ini
+  ini_file:
+    path: /etc/grafana/grafana.ini
+    section: security
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop:
+    - { option: 'admin_user', value: "{{ grafana_admin_user }}" }
+    - { option: 'admin_password', value: "{{ grafana_admin_password }}" }
+  notify: restart grafana
+
+- name: Ensure Grafana provisioning directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: grafana
+    mode: '0755'
+  loop:
+    - /etc/grafana/provisioning/datasources
+    - /etc/grafana/provisioning/dashboards
+    - /var/lib/grafana/dashboards
+
+- name: Provision Prometheus datasource
+  template:
+    src: prometheus-datasource.yml.j2
+    dest: /etc/grafana/provisioning/datasources/prometheus.yml
+    owner: root
+    group: grafana
+    mode: '0640'
+  notify: restart grafana
+
+- name: Provision dashboard providers
+  template:
+    src: dashboards-provider.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboards.yml
+    owner: root
+    group: grafana
+    mode: '0640'
+  notify: restart grafana
+
+- name: Deploy dynamic Node Exporter dashboard JSON definition
+  copy:
+    src: node-exporter-dashboard.json
+    dest: /var/lib/grafana/dashboards/node-exporter.json
+    owner: root
+    group: grafana
+    mode: '0644'
+  notify: restart grafana
+
+- name: Enable and start Grafana service
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes

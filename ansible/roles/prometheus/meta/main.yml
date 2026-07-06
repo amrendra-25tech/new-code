@@ -1,0 +1,5 @@
+galaxy_info:
+  author: DevOps Architect
+  description: Installs and manages Prometheus time series database server
+  license: MIT
+dependencies: []

@@ -1,0 +1,23 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install baseline utility packages
+  apt:
+    name:
+      - curl
+      - wget
+      - git
+      - htop
+      - unzip
+      - net-tools
+      - software-properties-common
+      - ca-certificates
+      - gnupg
+    state: present
+
+- name: Set system timezone
+  timezone:
+    name: "{{ timezone | default('UTC') }}"

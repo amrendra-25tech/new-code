@@ -1,0 +1,5 @@
+galaxy_info:
+  author: DevOps Architect
+  description: Validates overall monitoring stack operation and endpoint health
+  license: MIT
+dependencies: []

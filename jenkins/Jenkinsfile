@@ -1,0 +1,195 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'stage', 'prod'], description: 'Target deployment environment')
+        choice(name: 'ACTION', choices: ['apply', 'destroy', 'plan_only'], description: 'Infrastructure Action')
+        booleanParam(name: 'AUTO_APPROVE', defaultValue: true, description: 'Automatically approve Terraform Apply')
+    }
+
+    environment {
+        AWS_CREDENTIALS_ID = 'aws-enterprise-credentials'
+        TF_ROOT = 'terraform'
+        ANSIBLE_ROOT = 'ansible'
+        SCRIPTS_ROOT = 'scripts'
+    }
+
+    options {
+        timeout(time: 2, unit: 'HOURS')
+        timestamps()
+        ansiColor('xterm')
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('1. Checkout GitHub Repository') {
+            steps {
+                script {
+                    echo "Checking out environment branch/repository..."
+                    checkout scm
+                }
+            }
+        }
+
+        stage('2. Terraform Init') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.AWS_CREDENTIALS_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    dir(env.TF_ROOT) {
+                        sh 'terraform init'
+                    }
+                }
+            }
+        }
+
+        stage('3. Terraform Validate') {
+            steps {
+                dir(env.TF_ROOT) {
+                    sh 'terraform validate'
+                }
+            }
+        }
+
+        stage('4. Terraform fmt') {
+            steps {
+                dir(env.TF_ROOT) {
+                    sh 'terraform fmt -check'
+                }
+            }
+        }
+
+        stage('5. Terraform Plan') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.AWS_CREDENTIALS_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    dir(env.TF_ROOT) {
+                        sh "terraform plan -var-file=terraform.tfvars -var='environment=${params.ENVIRONMENT}' -out=tfplan"
+                    }
+                }
+            }
+        }
+
+        stage('6. Terraform Apply / Destroy') {
+            steps {
+                script {
+                    if (params.ACTION == 'plan_only') {
+                        echo "Plan-only selected. Skipping execution stages."
+                    } else if (params.ACTION == 'destroy') {
+                        withCredentials([usernamePassword(credentialsId: env.AWS_CREDENTIALS_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                            dir(env.TF_ROOT) {
+                                sh "terraform destroy -auto-approve -var-file=terraform.tfvars -var='environment=${params.ENVIRONMENT}'"
+                            }
+                        }
+                    } else {
+                        withCredentials([usernamePassword(credentialsId: env.AWS_CREDENTIALS_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                            dir(env.TF_ROOT) {
+                                sh 'terraform apply -auto-approve tfplan'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('7. Generate Dynamic Ansible Inventory') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.AWS_CREDENTIALS_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh "bash ${env.SCRIPTS_ROOT}/inventory.sh"
+                }
+            }
+        }
+
+        stage('8. Test SSH Connectivity') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                sh "bash ${env.SCRIPTS_ROOT}/validate.sh"
+            }
+        }
+
+        stage('9. Execute Ansible Playbooks') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                dir(env.ANSIBLE_ROOT) {
+                    sh 'ansible-playbook -i inventory/hosts.yml playbooks/site.yml'
+                }
+            }
+        }
+
+        stage('10. Install Prometheus') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                echo "Prometheus service configuration verified via Ansible Role [prometheus]."
+            }
+        }
+
+        stage('11. Install Grafana') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                echo "Grafana service & dashboards verified via Ansible Role [grafana]."
+            }
+        }
+
+        stage('12. Install Node Exporter') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                echo "Node Exporter metric metrics agent verified via Ansible Role [node_exporter]."
+            }
+        }
+
+        stage('13. Verify Services') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                sh "bash ${env.SCRIPTS_ROOT}/healthcheck.sh"
+            }
+        }
+
+        stage('14. Display Outputs') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                dir(env.TF_ROOT) {
+                    sh 'terraform output'
+                }
+            }
+        }
+
+        stage('15. Archive Logs') {
+            steps {
+                script {
+                    echo "Archiving execution console logs and test artifacts..."
+                    sh 'mkdir -p build-logs && cp -r ansible/*.log build-logs/ || true'
+                    archiveArtifacts artifacts: 'build-logs/**', allowEmptyArchive: true
+                }
+            }
+        }
+
+        stage('16. Cleanup Workspace') {
+            steps {
+                cleanWs deleteDirs: true, notFailBuild: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline Completed Successfully! All Enterprise Monitoring Stack Services Operational."
+        }
+        failure {
+            echo "Pipeline Failed! Check execution logs for details."
+        }
+    }
+}

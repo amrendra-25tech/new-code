@@ -1,0 +1,5 @@
+galaxy_info:
+  author: DevOps Architect
+  description: Installs Prometheus Node Exporter for hardware and OS metrics
+  license: MIT
+dependencies: []

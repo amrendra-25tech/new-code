@@ -1,0 +1,5 @@
+galaxy_info:
+  author: DevOps Architect
+  description: Installs Grafana and automates datasource & dashboard provisioning
+  license: MIT
+dependencies: []

@@ -1,0 +1,34 @@
+---
+- name: Ensure ufw is installed
+  apt:
+    name: ufw
+    state: present
+
+- name: Allow SSH port 22
+  ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+
+- name: Allow Prometheus port 9090
+  ufw:
+    rule: allow
+    port: '9090'
+    proto: tcp
+
+- name: Allow Grafana port 3000
+  ufw:
+    rule: allow
+    port: '3000'
+    proto: tcp
+
+- name: Allow Node Exporter port 9100
+  ufw:
+    rule: allow
+    port: '9100'
+    proto: tcp
+
+- name: Enable ufw firewall
+  ufw:
+    state: enabled
+    policy: deny

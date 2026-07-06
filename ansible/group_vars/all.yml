@@ -1,0 +1,5 @@
+---
+# Global Ansible Variables across all environments
+ansible_python_interpreter: /usr/bin/python3
+timezone: UTC
+devops_admin_user: devops

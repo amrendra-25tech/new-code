@@ -1,46 +1,34 @@
-<p align="Left">
-  <img width="480" height="360" alt="image" src="C:/Users/Anurag/.gemini/antigravity/brain/a1cf814c-8145-4526-a22f-2b2e0309d6fb/.user_uploaded/media_1787644423864.png" />
-</p>
 
-# SOP for Maven
+# SOP For Maven
 
 ---
 
 # Author Table
 
 | **Author** | **Created On** | **Version** | **Last Updated By** | **Last Edited On** | **L0 Reviewer** | **L1 Reviewer** | **L2 Reviewer** |
-| ---------- | -------------- | ----------- | ------------------- | ------------------ | --------------- | --------------- | --------------- |
-| Amrendra   | 27-08-2026     | 1.0         | Amrendra            | 27-08-2026         |  Shubham Rathi  | Shreya J/Nikita | Piyush Upadhyay |
+| ---------------- | -------------------- | ----------------- | ------------------------- | ------------------------ | --------------------- | --------------------- | --------------------- |
+| Amrendra         | 27-08-2026           | 1.0               | Amrendra                  | 27-08-2026               | Shubham Rathi         | Shreya J / Nikita     | Piyush Upadhyay       |
 
 ---
 
 # Table of Contents
 
-1. [Introduction](#1-introduction)
-2. [Purpose](#2-purpose)
-3. [Prerequisites](#3-prerequisites)
-4. [Installation & Setup](#4-installation--setup)
-5. [Configuration & Lifecycle Management](#5-configuration--lifecycle-management)
-6. [Project Lifecycle Execution](#6-project-lifecycle-execution)
-7. [Validation](#7-validation)
-8. [Use Cases](#8-use-cases)
-9. [Troubleshooting](#9-troubleshooting)
-10. [Best Practices](#10-best-practices)
-11. [Conclusion](#11-conclusion)
-12. [Contact Information](#12-contact-information)
-13. [References](#13-references)
+1. [Purpose](#1-purpose)
+2. [Prerequisites](#2-prerequisites)
+3. [Installation &amp; Setup](#3-installation--setup)
+4. [Configuration &amp; Lifecycle Management](#4-configuration--lifecycle-management)
+5. [Project Lifecycle Execution](#5-project-lifecycle-execution)
+6. [Validation](#6-validation)
+7. [Use Cases](#7-use-cases)
+8. [Troubleshooting](#8-troubleshooting)
+9. [Best Practices](#9-best-practices)
+10. [Conclusion](#10-conclusion)
+11. [Contact Information](#11-contact-information)
+12. [References](#12-references)
 
 ---
 
-# 1. Introduction
-
-This SOP provides a structured guide to **installing, configuring, running, and debugging Apache Maven** in **Ubuntu Linux environment**.
-
-It covers the required configuration, verification, monitoring, validation, and troubleshooting steps.
-
----
-
-# 2. Purpose
+# 1. Purpose
 
 The purpose of this SOP is to provide a standardized procedure for:
 
@@ -53,20 +41,20 @@ These procedures help maintain **system stability, reliability, performance, and
 
 ---
 
-# 3. Prerequisites
+# 2. Prerequisites
 
-| **Prerequisite** | **Details** |
-| ---------------- | ----------- |
-| OS & Access | Ubuntu 22.04+ LTS with SSH/terminal access |
-| Required Packages | `openjdk-25-jdk`, `curl`, `wget` |
-| Required Commands | `java`, `javac`, `apt` |
-| Permissions | `sudo` or root privileges for installation |
-| Network | Outbound internet access to reach Maven Central and repositories |
-| Configuration | Valid `JAVA_HOME` environment variable configured |
+| **Prerequisite** | **Details**                                                |
+| ---------------------- | ---------------------------------------------------------------- |
+| OS & Access            | Ubuntu 22.04+ LTS with SSH/terminal access                       |
+| Required Packages      | `openjdk-25-jdk`, `curl`, `wget`                           |
+| Required Commands      | `java`, `javac`, `apt`                                     |
+| Permissions            | `sudo` or root privileges for installation                     |
+| Network                | Outbound internet access to reach Maven Central and repositories |
+| Configuration          | Valid`JAVA_HOME` environment variable configured               |
 
 ---
 
-# 4. Installation & Setup
+# 3. Installation & Setup
 
 ## Step 1: Install Apache Maven
 
@@ -109,7 +97,7 @@ source ~/.bashrc
 
 ---
 
-# 5. Configuration & Lifecycle Management
+# 4. Configuration & Lifecycle Management
 
 ## Step 1: Manage Maven Configuration Files
 
@@ -152,7 +140,7 @@ Expected:
 
 ---
 
-# 6. Project Lifecycle Execution
+# 5. Project Lifecycle Execution
 
 ## Step 1: Project Generation
 
@@ -176,7 +164,7 @@ mvn clean package
 
 ---
 
-# 7. Validation
+# 6. Validation
 
 ### Validate Maven Environment
 
@@ -217,52 +205,52 @@ mvn compile
 
 ### Final Validation Checklist
 
-| **Validation** | **Expected Result** |
-| -------------- | ------------------- |
-| `mvn -version` execution | Reports Apache Maven version 3.8.x and Java 25.x |
-| Compilation status check | Build finishes with status `BUILD SUCCESS` |
-| Target artifact verification | The JAR file is generated inside the `target/` directory |
-| Local repository check | Dependencies cached under `~/.m2/repository/` |
+| **Validation**         | **Expected Result**                                 |
+| ---------------------------- | --------------------------------------------------------- |
+| `mvn -version` execution   | Reports Apache Maven version 3.8.x and Java 25.x          |
+| Compilation status check     | Build finishes with status`BUILD SUCCESS`               |
+| Target artifact verification | The JAR file is generated inside the`target/` directory |
+| Local repository check       | Dependencies cached under`~/.m2/repository/`            |
 
 ---
 
-# 8. Use Cases
+# 7. Use Cases
 
-| **Scenario** | **Commands / Actions** |
-| ------------ | ---------------------- |
-| Force update dependencies | `mvn clean install -U` |
+| **Scenario**                 | **Commands / Actions**      |
+| ---------------------------------- | --------------------------------- |
+| Force update dependencies          | `mvn clean install -U`          |
 | Package without running unit tests | `mvn clean package -DskipTests` |
-| Run a specific test class | `mvn test -Dtest=AppTest` |
-| Build application in offline mode | `mvn clean package -o` |
-| Trace dependency hierarchy | `mvn dependency:tree` |
-| Clean compile and build | `mvn clean compile` |
+| Run a specific test class          | `mvn test -Dtest=AppTest`       |
+| Build application in offline mode  | `mvn clean package -o`          |
+| Trace dependency hierarchy         | `mvn dependency:tree`           |
+| Clean compile and build            | `mvn clean compile`             |
 
 ---
 
-# 9. Troubleshooting
+# 8. Troubleshooting
 
-| **Issue** | **Cause** | **Solution** |
-| --------- | --------- | ------------ |
-| `JAVA_HOME is not defined correctly` | Environmental path variable pointing to non-existent JDK directory | Update shell configuration `~/.bashrc` to point to `/usr/lib/jvm/java-25-openjdk-amd64` |
-| `Failed to collect dependencies` | Inability to resolve repository URLs due to networking or proxy config | Define proxy rules in `~/.m2/settings.xml` or run in offline mode using `-o` |
-| `OutOfMemoryError` | Default JVM heap space allocated to Maven builder is insufficient | Set environment variable: `export MAVEN_OPTS="-Xmx1024m -XX:MaxMetaspaceSize=512m"` |
-| Plugin execution error | Corrupt plugin artifact cached in local repository | Delete corresponding directories under `~/.m2/repository/` and rerun with `-U` |
-
----
-
-# 10. Best Practices
-
-| **Best Practice** | **Description** |
-| ----------------- | --------------- |
-| Use `dependencyManagement` | Manage common dependency versions in parent POM file for multi-module projects |
-| Keep plugins versioned | Explicitly define plugin versions in POM files to guarantee build repeatability |
-| Clean before building | Always include `clean` lifecycle command (`mvn clean package`) for production/CI releases |
-| Configure Enterprise Mirrors | Route dependency requests through secure internal mirrors (e.g., Nexus or Artifactory) |
-| Minimize Snapshot Dependencies | Avoid release builds depending on `-SNAPSHOT` versions to ensure version immutability |
+| **Issue**                        | **Cause**                                                        | **Solution**                                                                         |
+| -------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `JAVA_HOME is not defined correctly` | Environmental path variable pointing to non-existent JDK directory     | Update shell configuration`~/.bashrc` to point to `/usr/lib/jvm/java-25-openjdk-amd64` |
+| `Failed to collect dependencies`     | Inability to resolve repository URLs due to networking or proxy config | Define proxy rules in`~/.m2/settings.xml` or run in offline mode using `-o`            |
+| `OutOfMemoryError`                   | Default JVM heap space allocated to Maven builder is insufficient      | Set environment variable:`export MAVEN_OPTS="-Xmx1024m -XX:MaxMetaspaceSize=512m"`       |
+| Plugin execution error                 | Corrupt plugin artifact cached in local repository                     | Delete corresponding directories under`~/.m2/repository/` and rerun with `-U`          |
 
 ---
 
-# 11. Conclusion
+# 9. Best Practices
+
+| **Best Practice**        | **Description**                                                                        |
+| ------------------------------ | -------------------------------------------------------------------------------------------- |
+| Use`dependencyManagement`    | Manage common dependency versions in parent POM file for multi-module projects               |
+| Keep plugins versioned         | Explicitly define plugin versions in POM files to guarantee build repeatability              |
+| Clean before building          | Always include`clean` lifecycle command (`mvn clean package`) for production/CI releases |
+| Configure Enterprise Mirrors   | Route dependency requests through secure internal mirrors (e.g., Nexus or Artifactory)       |
+| Minimize Snapshot Dependencies | Avoid release builds depending on`-SNAPSHOT` versions to ensure version immutability       |
+
+---
+
+# 10. Conclusion
 
 This SOP provides a standardized approach to **Apache Maven build system** in **Ubuntu Linux environment**.
 
@@ -270,18 +258,18 @@ Following these procedures helps administrators maintain **reliability, performa
 
 ---
 
-# 12. Contact Information
+# 11. Contact Information
 
-| **Name** | **Email** |
-| -------- | --------- |
-| Amrendra | [amrendra@mygurukulam.co](mailto:amrendra@mygurukulam.co) |
+| **Name** | **Email**                                                                        |
+| -------------- | -------------------------------------------------------------------------------------- |
+| Amrendra       | [amrendra.yadav.snaatak.@mygurukulam.co](mailto:amrendra.yadav.snaatak.@mygurukulam.co) |
 
 ---
 
-# 13. References
+# 12. References
 
-| **Topic** | **Description** |
-| --------- | --------------- |
-| [Official Documentation](https://maven.apache.org/guides/index.html) | Official guide and references for Apache Maven. |
-| [Linux Documentation](https://linux.die.net/) | Linux administration and command reference guide. |
-| [Ubuntu Documentation](https://help.ubuntu.com/) | Ubuntu community and official system documentation. |
+| **Topic**                                                     | **Description**                               |
+| ------------------------------------------------------------------- | --------------------------------------------------- |
+| [Official Documentation](https://maven.apache.org/guides/index.html) | Official guide and references for Apache Maven.     |
+| [Linux Documentation](https://linux.die.net/)                        | Linux administration and command reference guide.   |
+| [Ubuntu Documentation](https://help.ubuntu.com/)                     | Ubuntu community and official system documentation. |

@@ -51,26 +51,31 @@ Execute these standard commands during routine development, compiling, and testi
   ```bash
   mvn test
 
+<img width="1818" height="481" alt="mvn test" src="https://github.com/user-attachments/assets/39aba489-059a-48e3-aa42-72535f208f50" />
+
 
 * **Package Application (Produces JAR/WAR inside target/):**
   ```bash
   mvn package
 
-<img width="1302" height="257" alt="mvn package" src="https://github.com/user-attachments/assets/07f11373-2375-4119-b078-c953dc06f5f8" />
+<img width="1302" height="257" alt="mvn package" src="https://github.com/user-attachments/assets/0b615f5c-006e-4739-a997-7be03d11271a" />
 
-  ```
+
 * **Install to Local Repository (~/.m2/repository):**
   ```bash
   mvn install
 
-  <img width="1831" height="633" alt="install" src="https://github.com/user-attachments/assets/6ea56ddb-4cd0-4672-bf00-f6c5b87a9bce" />
+<img width="1831" height="633" alt="install" src="https://github.com/user-attachments/assets/321b42dd-826f-4f0a-8ade-c744957941a3" />
 
-  ```
+
 
 ### Build Customizations
 * **Skip Unit Tests during compilation or installation:**
   ```bash
   mvn clean install -DskipTests
+<img width="1678" height="370" alt="skiptest" src="https://github.com/user-attachments/assets/cc076588-fd05-4cbc-b773-f230f2e584f9" />
+
+
   ```
 * **Run Specific Unit Test Class:**
   ```bash

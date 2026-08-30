@@ -6,7 +6,7 @@
 
 | **Author** | **Created On** | **Version** | **L0 Reviewer**           | **L1 Reviewer**             | **L2 Reviewer**             |
 | ---------------- | -------------------- | ----------------- | ------------------------------- | --------------------------------- | --------------------------------- |
-| Amrendra         | 30-08-2026           | 1.0               | Shubham Rathi<L0 Reviewer></l0> | Shreya J/Nikita<L1 Reviewer></l1> | Piyush Upadhyay<L2 Reviewer></l2> |
+| Amrendra         | 31-08-2026           | 1.0               | Shubham Rathi<L0 Reviewer></l0> | Shreya J/Nikita<L1 Reviewer></l1> | Piyush Upadhyay<L2 Reviewer></l2> |
 
 ---
 
@@ -28,7 +28,7 @@
 
 # 1. Introduction
 
-This document serves as a step-by-step setup guide for installing and configuring Go (Golang) on Windows, Linux, and macOS systems. It provides standard procedures to install Golang, configure system environment variables, verify installations, and troubleshoot common setup issues using both manual methods and an automated installer script.
+This document serves as a step-by-step setup guide for installing and configuring Go (Golang) on Linux environments. It focuses exclusively on using the automated `install.sh` Bash installation script to manage new installs, upgrade existing setups, and configure necessary environment paths.
 
 ---
 
@@ -42,8 +42,8 @@ Go, also known as Golang, is an open-source, compiled, and statically typed prog
 
 Golang installation is the process of setting up the Go compiler, tools, and runtime environment. Before installing Go, make sure you have:
 
-* A computer running Linux, macOS, or Windows.
-* Administrator/sudo access (for default global path setups).
+* A computer running Linux (e.g., Ubuntu/Debian or RedHat/CentOS).
+* Sudo/Administrator access (for default global path setups).
 * An active internet connection.
 * Sufficient disk space (typically 500MB+).
 
@@ -69,102 +69,87 @@ Configuring the Go environment is essential for several reasons:
 
 # 5. Golang Installation Guide Workflow
 
-The installation workflow varies depending on whether you are using the automated Bash installer script or native tools.
-
-### Automated Script Workflow:
+The installation workflow focuses on using the automated Bash installer script which streamlines the setup process:
 
 1. **System Detection:** Auto-detects target OS type and CPU architecture.
-2. **Version Selection:** Fetches the latest stable version from official servers or accepts a specific parameter.
-3. **Upgrade Safety:** Backs up or cleans up existing installations to prevent folder pollution.
+2. **Version Selection:** Querying the latest stable version from `go.dev` or accepting a specific user-defined version parameter.
+3. **Upgrade Safety:** Backs up or cleans up existing installations to prevent mixed-dependency pollution.
 4. **Execution:** Downloads, extracts the archive, and updates environment variables in shell profiles.
-
-### Manual Tarball Workflow (Linux/macOS):
-
-1. **Download:** Download the target `.tar.gz` package from `go.dev/dl/`.
-2. **Extract:** Remove any old installation and extract to `/usr/local/go`.
-3. **Environment Setup:** Append environmental paths (`PATH`, `GOPATH`, `GOBIN`) to user profile files.
-4. **Verification:** Validate the paths and execution outputs.
+5. **Verification:** Validates installation paths and version execution.
 
 ## 5.1 Workflow Diagram
 
 ```mermaid
 graph TD
-    Start([Start]) --> MethodCheck{Choose Installation Method?}
+    Start([Start]) --> PrivilegeCheck{Installation Privilege?}
   
-    %% Automated Script Flow
-    MethodCheck -- Automated Script --> ScrRun[Run: ./install.sh]
-    ScrRun --> ScrOS[Auto-detect OS & CPU Arch]
-    ScrOS --> ScrVer[Query latest stable version from go.dev]
-    ScrVer --> ScrClean[Clean up or Backup old Go folder]
-    ScrClean --> ScrInstall[Extract Go and append profile envs]
-    ScrInstall --> Verify[Verify: go version & go env]
+    %% Sudo / Global Flow
+    PrivilegeCheck -- Root / Sudo Required --> GlobalInstall[Run: sudo ./install.sh --backup]
+    GlobalInstall --> DetectEnv[Auto-detect OS & CPU Arch]
+    DetectEnv --> FetchVer[Fetch Go Version from go.dev]
+    FetchVer --> CleanOld[Remove/Backup existing /usr/local/go]
+    CleanOld --> DownloadTar[Download target Go Tarball]
+    DownloadTar --> ExtractTar[Extract archive to /usr/local/go]
+    ExtractTar --> UpdateProfile[Append PATH and env variables to ~/.profile]
+    UpdateProfile --> ReloadProfile[Reload shell environment: source ~/.profile]
   
-    %% Manual Tarball Flow
-    MethodCheck -- Manual Tarball --> LinDown[Download Tarball from go.dev/dl]
-    LinDown --> LinClean[Run: sudo rm -rf /usr/local/go]
-    LinClean --> LinExtract[Extract: sudo tar -C /usr/local -xzf go.tar.gz]
-    LinExtract --> LinHome[Append GOROOT, GOPATH & PATH to ~/.profile]
-    LinHome --> LinReload[Reload environment: source ~/.profile]
-    LinReload --> Verify
+    %% Local Flow
+    PrivilegeCheck -- Non-Root / User-space --> LocalInstall[Run: ./install.sh --dir $HOME/.local/go]
+    LocalInstall --> DetectEnv
   
-    Verify --> End([End: Go Environment Setup Completed])
+    ReloadProfile --> Verify[Verify: go version & go env]
+    Verify --> End([End: Go Installation Completed])
 ```
 
 ---
 
 # 6. Different Tools for Golang Installation
 
-| **Tool**                       | **Description**                                                                                              |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| **`install.sh` Bash Script** | Standardized custom installer script resolving dependencies, clean upgrades, and automatic profiles configuration. |
-| **APT Package Manager**        | Debian/Ubuntu command-line system package manager. Convenient but often includes older Go package versions.        |
-| **Manual Tarball Extraction**  | Direct download and manual extraction of official packages, giving maximum flexibility on directory locations.     |
+| **Tool Option / Method**            | **Description**                                                                                |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **`install.sh` Standard Install** | Installs the latest stable Go release globally to`/usr/local/go` (requires sudo).                  |
+| **`install.sh` Custom Version**   | Downloads and configures a specific release version (e.g.,`1.21.3`) instead of the latest release. |
+| **`install.sh` Custom Directory** | Installs Go locally into user-writable directories (e.g.,`$HOME/.local/go`) without root access.   |
 
 ---
 
 # 7. Best Practices
 
-Here are step-by-step procedures, validation methods, troubleshooting guides, and useful command references for setting up Go.
+Here are step-by-step procedures, validation methods, troubleshooting guides, and useful command references for setting up Go using the installer script.
 
-### 7.1 Detailed Automated Script Setup & Verification
+### 7.1 Detailed Global Setup & Verification (Default Installation)
 
 1. **Run Installer:**
    * Download the `install.sh` script to your machine and make it executable:
      ```bash
      chmod +x install.sh
      ```
-   * Execute the installer script (use `sudo` if installing to the default location `/usr/local/go`):
+   * Execute the installer script with sudo privileges (using the `--backup` option to secure older setups):
      ```bash
      sudo ./install.sh --backup
      ```
-2. **Local User Installation (Non-Root/No-Sudo):**
+2. **Verification:**
+   * Reload environment settings:
+     ```bash
+     source ~/.profile
+     ```
+   * Run `go version` (Expected output: `go version go1.x.x`).
+   * Run `go env` to verify all environment variables (`GOROOT`, `GOPATH`).
+
+### 7.2 Detailed Local Setup & Verification (User-space Installation)
+
+1. **Run Installer for User-space:**
    * If you do not have root privileges, run the script specifying a user-writable directory path:
      ```bash
      ./install.sh --dir "$HOME/.local/go"
      ```
-3. **Verification:**
-   * Reload environment settings: `source ~/.profile` (or `source ~/.bashrc` / `source ~/.zshrc`).
-   * Run `go version` (Expected output: `go version go1.21.x` or similar).
-   * Run `go env` to verify all environment variables (`GOROOT`, `GOPATH`).
-
-### 7.2 Detailed Linux Manual Setup & Verification
-
-1. **Download & Clean:**
-   * Download the latest package: `curl -OL https://go.dev/dl/go1.21.3.linux-amd64.tar.gz`.
-   * Safely remove any previous installation: `sudo rm -rf /usr/local/go`.
-2. **Extract Package:**
-   * Extract the downloaded archive to `/usr/local`:
+2. **Verification:**
+   * Reload environment settings:
      ```bash
-     sudo tar -C /usr/local -xzf go1.21.3.linux-amd64.tar.gz
+     source ~/.profile
      ```
-3. **Configure Environment Variables:**
-   * Open `~/.profile` or `~/.bashrc` and append:
-     ```bash
-     export GOROOT=/usr/local/go
-     export GOPATH=$HOME/go
-     export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-     ```
-   * Reload variables: `source ~/.profile`.
+   * Run `go version` (Expected output: `go version go1.x.x`).
+   * Run `go env` to verify environment variables point to the custom local directory.
 
 ### 7.3 Troubleshooting Guidelines
 
@@ -172,22 +157,23 @@ Here are step-by-step procedures, validation methods, troubleshooting guides, an
 > **Problem 1: 'go' is not recognized / Command not found**
 >
 > * *Cause:* The directory `/usr/local/go/bin` is not present in your system `PATH` variable, or your active shell terminal has not reloaded the profile configurations.
-> * *Solution:* Append the bin directory to your `PATH` and run `source ~/.profile` or restart your terminal.
+> * *Solution:* Run `source ~/.profile` to reload variables, or check the terminal profile configurations to ensure the binary path was appended correctly.
 
 > [!IMPORTANT]
 > **Problem 2: Permission Denied during installation**
 >
 > * *Cause:* Trying to write or install to `/usr/local` or `/opt` directories without admin/sudo privileges.
-> * *Solution:* Prefix the installer command with `sudo` or configure the installer to output to a user-owned path (e.g., `-d ~/.local/go`).
+> * *Solution:* Prefix the installer command with `sudo` or configure the installer to output to a user-owned path using the `-d` / `--dir` option.
 
 > [!NOTE]
-> **Problem 3: Duplicate Go path entries or conflicting versions**
+> **Problem 3: Version Unavailable / HTTP 404 Error**
 >
-> * *Solution:* Inspect your shell configurations (`~/.bashrc`, `~/.profile`, `~/.zshrc`) and remove overlapping path modifications. Use `which go` to identify which executable is being called first.
+> * *Cause:* Specifying an invalid or non-existent Go version parameter (e.g., `-v 1.99.9`).
+> * *Solution:* Verify available versions on the [official download page](https://go.dev/dl/) and run the script with a correct version parameter.
 
 ### 7.4 Useful Commands Reference
 
-| Purpose                              | Linux / macOS Command  | Description                                               |
+| Purpose                              | Linux Command          | Description                                               |
 | ------------------------------------ | ---------------------- | --------------------------------------------------------- |
 | **Check Go version**           | `go version`         | Displays the installed Go compilation runtime version.    |
 | **Print Go environments**      | `go env`             | Prints Go environment variables (`GOROOT`, `GOPATH`). |

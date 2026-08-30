@@ -68,8 +68,8 @@ Expected output:
 
 <details>
 <summary>📸 <strong>Screenshot - Package Installation Success</strong></summary>
+<img width="1855" height="948" alt="Screenshot 2026-08-30 010319" src="https://github.com/user-attachments/assets/553da45d-9a81-4a0f-8f41-ca6598a3c6d8" />
 
-<img width="480" height="360" alt="image" src="C:/Users/Anurag/.gemini/antigravity/brain/a1cf814c-8145-4526-a22f-2b2e0309d6fb/.user_uploaded/media_1787644423864.png" />
 
 </details>
 

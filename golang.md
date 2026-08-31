@@ -21,9 +21,8 @@
 7. [Verification](#verification)
 8. [Use Cases](#use-cases)
 9. [Best Practices](#best-practices)
-10. [FAQs](#faqs)
-11. [Contact Information](#contact-information)
-12. [References](#references)
+10. [Contact Information](#contact-information)
+11. [References](#references)
 
 ---
 

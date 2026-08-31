@@ -13,11 +13,12 @@
 # Table of Contents
 
 1. [Purpose](#1-purpose)
-2. [Commonly Used Commands](#2-commonly-used-commands)
-3. [Debugging & Troubleshooting Commands](#3-debugging--troubleshooting-commands)
-4. [Validation](#4-validation)
-5. [Contact Information](#5-contact-information)
-6. [References](#6-references)
+2. [Prerequisites](#2-prerequisites)
+3. [Commonly Used Commands](#2-commonly-used-commands)
+4. [Debugging & Troubleshooting Commands](#3-debugging--troubleshooting-commands)
+5. [Validation](#4-validation)
+6. [Contact Information](#5-contact-information)
+7. [References](#6-references)
 
 ---
 
@@ -28,8 +29,18 @@ The purpose of this SOP is to provide a standardized reference guide focusing ex
 These procedures help maintain build efficiency, resolve dependency conflicts, trace errors, and ensure system operational consistency.
 
 ---
+# 2. Prerequisites
+| **Prerequisite** | **Details** |
+| ---------------- | ----------- |
+| OS & Access | Ubuntu 22.04+ LTS with SSH/terminal access |
+| Required Packages | Java JDK 8 or above (JDK 25 recommended) |
+| Required Commands | `java`, `mvn` |
+| Network | Outbound internet access to reach Maven Central (unless in offline mode) |
+| Configuration | Valid `JAVA_HOME` environment variable configured |
+---
 
-# 2. Commonly Used Commands
+
+# 3. Commonly Used Commands
 
 Execute these standard commands during routine development, compiling, and testing workflows:
 
@@ -84,7 +95,7 @@ Install to Local Repository (~/.m2/repository):**
 
 
 
-# 3. Debugging & Troubleshooting Commands
+# 4. Debugging & Troubleshooting Commands
 
 Use these commands to diagnose compilation failures, dependency conflicts, environment properties, and cache corruption:
 
@@ -136,7 +147,7 @@ Use these commands to diagnose compilation failures, dependency conflicts, envir
 
 ---
 
-# 4. Validation
+# 5. Validation
 
 ### Validate Maven Version and Java SDK Link
 Ensure that the Maven installation is pointing to the correct active JDK runtime:
@@ -158,7 +169,7 @@ mvn -version
 
 ---
 
-# 5. Contact Information
+# 6. Contact Information
 
 | **Name** | **Email** |
 | -------- | --------- |
@@ -166,7 +177,7 @@ mvn -version
 
 ---
 
-# 6. References
+# 7. References
 
 | **Topic** | **Description** |
 | --------- | --------------- |

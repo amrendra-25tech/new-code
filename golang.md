@@ -1,8 +1,8 @@
-#  Golang Installation via Bash Script
+# Golang  Installation via Bash Script
 
 ---
 
-## Document Information
+## Author Table
 
 | **Author** | **Created on** | **Version** | **L0 Reviewer** | **L1 Reviewer** | **L2 Reviewer** |
 | ---------------- | -------------------- | ----------------- | --------------------- | --------------------- | --------------------- |
@@ -29,11 +29,7 @@
 
 ## Introduction
 
-Golang (Go) is an open-source programming language developed by Google, designed for building fast, scalable, and efficient applications.
-
-It is widely used in cloud-native development, microservices, and DevOps tools due to its performance and simplicity.
-
-Installing Golang using a Bash script helps automate the setup process and ensures consistency across environments.
+This document contains step-by-step procedures for creating and running the Bash script, detailed script explanations, installation verification methods, use cases, best practices, FAQs, author contact information, and reference links.
 
 ---
 
@@ -88,7 +84,8 @@ sudo rm -rf /usr/local/go
 sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
 
 # Set environment variables
-echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
+export PATH=$PATH:/usr/local/go/bin
+echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
 
 # Reload environment
 source ~/.bashrc

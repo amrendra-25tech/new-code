@@ -1,6 +1,8 @@
 # Java  Installation Guide Documentation
+<p align="center">
+<img width="200" height="150" alt="java-logo-png_seeklogo-158094" src="https://github.com/user-attachments/assets/414ae687-38e1-4b99-931a-73de840c9d70" />
 
----
+</p>
 
 # Document Information
 
@@ -20,6 +22,10 @@
    - [5.1 Workflow Diagram](#51-workflow-diagram)
 6. [Different Tools for Java Installation](#6-different-tools-for-java-installation)
 7. [Best Practices](#7-best-practices)
+   - [7.1 Detailed Windows Setup & Verification](#71-detailed-windows-setup--verification)
+   - [7.2 Detailed Ubuntu/Linux Setup & Verification](#72-detailed-ubuntulinux-setup--verification)
+   - [7.3 Troubleshooting Guidelines](#73-troubleshooting-guidelines)
+   - [7.4 Useful Commands Reference](#74-useful-commands-reference)
 8. [Recommendation / Conclusion](#8-recommendation--conclusion)
 9. [Contact Information](#9-contact-information)
 10. [References](#10-references)
@@ -87,6 +93,9 @@ The installation workflow varies between operating systems. Below is a unified w
 
 ## 5.1 Workflow Diagram
 
+<details>
+<summary>Click to Expand Java Installation Guide Workflow Diagram</summary>
+
 ```mermaid
 graph TD
     Start([Start]) --> OSCheck{Operating System?}
@@ -125,76 +134,52 @@ graph TD
 
 # 7. Best Practices
 
-Here are step-by-step procedures, validation methods, troubleshooting guides, and useful command references for setting up JDK 25.
+| **Best Practice** | **Description** |
+| ----------------- | --------------- |
+| **Use LTS Versions** | Choose LTS releases (like JDK 25) for stability and extended support. |
+| **Set JAVA_HOME** | Configure `JAVA_HOME` permanently in system variables or `~/.bashrc`. |
+| **Update System PATH** | Add `%JAVA_HOME%\bin` or `$JAVA_HOME/bin` to `PATH` for global command access. |
+| **Use Package Managers** | Use `apt` on Linux for automated dependencies and security patches. |
+| **Manage Multiple Versions** | Use `update-alternatives` (Linux) or path priority (Windows) to switch JDKs. |
+| **Verify Full JDK** | Check both `java -version` and `javac -version` to confirm complete JDK setup. |
 
 ### 7.1 Detailed Windows Setup & Verification
 
-1. **Download & Run Installer:**
-   * Download the **Windows x64 Installer (.exe)** from the [Oracle Java Downloads](https://www.oracle.com/in/java/technologies/?utm_source=chatgpt.com) page.
-   * Run the `.exe` file, grant permission, and keep the default installation location (`C:\Program Files\Java\`).
-2. **Configure `JAVA_HOME`:**
-   * Open Environment Variables (Press `Windows + R`, type `sysdm.cpl`, go to the *Advanced* tab, and click *Environment Variables*).
-   * Under *System variables*, click **New**. Set Variable name: `JAVA_HOME` and Variable value: `C:\Program Files\Java\jdk-25`.
-3. **Configure `PATH`:**
-   * Select **Path** in *System variables*, click **Edit**, then **New**.
-   * Add `%JAVA_HOME%\bin` and click **OK**. Open a new Command Prompt.
-4. **Verification:**
-   * Run `java -version` (Expected output: `java version "25.0.4.1"`).
-   * Run `javac -version` (Expected output: `javac 25.0.4.1`).
-   * Run `where java` and `where javac` to verify the execution paths.
-   * Run `echo %JAVA_HOME%` to verify the environment path variable.
+| **Step** | **Task** | **Instructions** | **Commands** |
+| :---: | :--- | :--- | :--- |
+| **1** | **Download & Install** | Download the Windows x64 Installer (.exe) from Oracle and install using default path (`C:\Program Files\Java\`). | — |
+| **2** | **Set `JAVA_HOME`** | Open System Properties > Advanced > Environment Variables. Add `JAVA_HOME` under System variables. | `sysdm.cpl`<br>Name: `JAVA_HOME`<br>Value: `C:\Program Files\Java\jdk-25` |
+| **3** | **Update `PATH`** | Edit `Path` under System variables and append the JDK `bin` folder. | `%JAVA_HOME%\bin` |
+| **4** | **Verification** | Open a new Command Prompt and verify runtime, compiler, paths, and environment variable. | `java -version`<br>`javac -version`<br>`where java`<br>`where javac`<br>`echo %JAVA_HOME%` |
 
 ### 7.2 Detailed Ubuntu/Linux Setup & Verification
 
-1. **Install OpenJDK:**
-   * Update packages and install OpenJDK 25:
-     ```bash
-     sudo apt update
-     sudo apt install openjdk-25-jdk
-     ```
-2. **Determine Path:**
-   * Find the path: `readlink -f $(which java)` (e.g. `/usr/lib/jvm/java-25-openjdk-amd64/bin/java`).
-3. **Set `JAVA_HOME`:**
-   * Open `~/.bashrc` (e.g. using `nano ~/.bashrc`) and append:
-     ```bash
-     export JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64
-     export PATH=$JAVA_HOME/bin:$PATH
-     ```
-   * Reload configuration: `source ~/.bashrc`. Verify with `echo $JAVA_HOME`.
-4. **Manage Multiple Versions:**
-   * Run `update-java-alternatives --list` to check available versions.
-   * Run `sudo update-alternatives --config java` (and `javac`) to choose default versions interactively.
+| **Step** | **Task** | **Instructions** | **Commands** |
+| :---: | :--- | :--- | :--- |
+| **1** | **Install OpenJDK** | Update package cache and install OpenJDK 25. | `sudo apt update`<br>`sudo apt install -y openjdk-25-jdk` |
+| **2** | **Find Install Path** | Locate the absolute path of the Java binary. | `readlink -f $(which java)` |
+| **3** | **Set `JAVA_HOME`** | Append environment variables to `~/.bashrc` and reload the shell profile. | `export JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64`<br>`export PATH=$JAVA_HOME/bin:$PATH`<br>`source ~/.bashrc`<br>`echo $JAVA_HOME` |
+| **4** | **Manage Versions** | List installed versions and select the active runtime or compiler. | `update-java-alternatives --list`<br>`sudo update-alternatives --config java`<br>`sudo update-alternatives --config javac` |
 
 ### 7.3 Troubleshooting Guidelines
 
-> [!WARNING]
-> **Problem 1: 'java' is not recognized**
->
-> * *Cause:* Java is not installed, or not included in PATH, or the terminal window was opened before path updates.
-> * *Solution:* Run `echo %JAVA_HOME%` or `where java` to check configuration, and add `%JAVA_HOME%\bin` to the Path variables.
-
-> [!IMPORTANT]
-> **Problem 2: 'javac' is not recognized**
->
-> * *Cause:* You may have installed JRE only, or compilation bin routes are missing.
-> * *Solution:* Install the full JDK and ensure `%JAVA_HOME%\bin` is added to the Path variables.
-
-> [!NOTE]
-> **Problem 3: Wrong Java Version**
->
-> * *Solution:* Use `sudo update-alternatives --config java` on Linux, or check `where java` and rearrange Path items on Windows.
+| **Problem** | **Possible Cause** | **Solution** |
+| ----------- | ------------------ | ------------ |
+| **'java' is not recognized** | Java is not installed, not included in PATH, or the terminal was opened before path updates. | Check `echo %JAVA_HOME%` or `where java`. Add `%JAVA_HOME%\bin` to the Path variables and restart the terminal. |
+| **'javac' is not recognized** | You may have installed JRE only, or compilation bin routes are missing. | Install the full JDK and ensure `%JAVA_HOME%\bin` (Windows) or `$JAVA_HOME/bin` (Linux) is added to the Path variables. |
+| **Wrong Java Version** | Multiple Java versions are present and an unintended path takes precedence. | **Windows:** Run `where java` and adjust path priorities in `Path`.<br>**Linux:** Use `sudo update-alternatives --config java` (and `javac`) to choose the active version. |
 
 ### 7.4 Useful Commands Reference
 
-| Purpose                            | Windows              | Linux               |
-| ---------------------------------- | -------------------- | ------------------- |
-| **Check Java version**       | `java -version`    | `java -version`   |
-| **Check compiler version**   | `javac -version`   | `javac -version`  |
-| **Find Java executable**     | `where java`       | `which java`      |
-| **Find compiler executable** | `where javac`      | `which javac`     |
-| **Check `JAVA_HOME`**      | `echo %JAVA_HOME%` | `echo $JAVA_HOME` |
-| **Compile Java file**        | `javac File.java`  | `javac File.java` |
-| **Run Java class**           | `java ClassName`   | `java ClassName`  |
+| Purpose | Windows | Linux |
+| :--- | :--- | :--- |
+| **Check version** | `java -version` | `java -version` |
+| **Check compiler** | `javac -version` | `javac -version` |
+| **Find java** | `where java` | `which java` |
+| **Find javac** | `where javac` | `which javac` |
+| **Check JAVA_HOME** | `echo %JAVA_HOME%` | `echo $JAVA_HOME` |
+| **Compile** | `javac File.java` | `javac File.java` |
+| **Run** | `java ClassName` | `java ClassName` |
 
 ---
 

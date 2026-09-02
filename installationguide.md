@@ -1,7 +1,6 @@
 # Java  Installation Guide Documentation
 <p align="center">
-<img width="200" height="150" alt="java-logo-png_seeklogo-158094" src="https://github.com/user-attachments/assets/414ae687-38e1-4b99-931a-73de840c9d70" />
-
+<img width="200" height="150" alt="java-logo-png_seeklogo-158094" src="https://github.com/user-attachments/assets/e4e3b14c-abae-471b-8938-369b0b450611" />
 </p>
 
 # Document Information
@@ -93,9 +92,6 @@ The installation workflow varies between operating systems. Below is a unified w
 
 ## 5.1 Workflow Diagram
 
-<details>
-<summary>Click to Expand Java Installation Guide Workflow Diagram</summary>
-
 ```mermaid
 graph TD
     Start([Start]) --> OSCheck{Operating System?}
@@ -117,8 +113,6 @@ graph TD
     WinVerify --> End([End: Environment Setup Completed])
     LinVerify --> End
 ```
-
-</details>
 
 ---
 

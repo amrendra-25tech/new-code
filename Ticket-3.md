@@ -1,138 +1,153 @@
-# OT-MICROSERVICES / documentation-template Wiki
+# DOCUMENT: Ubuntu Concepts
 
-## Operating System - Ubuntu Concepts
+<p align="center">
+  <img width="152" height="148" alt="Ubuntu Logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9e/UbuntuCoF.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" />
+</p>
 
-| Author   | Created on | Version   | Last updated by | Last edited on |
-| -------- | ---------- | --------- | --------------- | -------------- |
-| amrendra | 24-08-26   | version 1 | amrendra        | 24-08-26       |
+# Author Table
 
----
-
-### Purpose
-
-Provides a concise overview of the Ubuntu OS concepts for the Setup Epic, detailing what Ubuntu is, why it is used, and core principles of software and service management.
-
-- **What is Ubuntu:** A popular, Debian-based, open-source Linux operating system.
-- **Why Ubuntu:** Free, stable LTS releases (5-year support), secure, robust package management (`apt`), and service control (`systemd`).
-- **Problems Solved:** Offers a stable, reproducible host environment for microservices, eliminating licensing costs and vendor lock-in.
+| **Author** | **Created&nbsp;On** | **Version** | **Last&nbsp;Edited&nbsp;On** | **L0 Reviewer** | **L1 Reviewer** | **L2 Reviewer** |
+| --- | --- | --- | --- | --- | --- | --- |
+| Amrendra | 24&#8209;08&#8209;2026 | 1.0 | 24&#8209;08&#8209;2026 | Shubham Rathi<L0 Reviewer></l0> | Shreya J/ Nikita<L1 Reviewer></l1> | Piyush Upadhyay<L2 Reviewer></l2> |
 
 ---
 
-### System Requirements & Pre-requisites
+# Table of Contents
 
-Ensure the target local or virtual system meets these requirements prior to deployment:
-
-- **Processor:** 2.0 GHz dual-core or better
-- **RAM:** 4 GB
-- **Disk:** 25 GB
-- **OS:** Ubuntu 22.04 LTS
-
----
-
-### Dependencies & Ports
-
-#### System Dependencies
-
-| Type          | Name              | Version       | Description                            |
-| ------------- | ----------------- | ------------- | -------------------------------------- |
-| Build-time    | gcc / make        | 11.x+ / 4.3+  | GNU compiler collection and build tool |
-| Run-time      | glibc / openssl   | 2.35+ / 3.0+  | Standard C and cryptographic libraries |
-| Core Services | systemd / python3 | 249+ / 3.10.x | System manager and scripting runtime   |
-
-#### Important Ports
-
-| Direction | Port     | Protocol | Usage                                             |
-| --------- | -------- | -------- | ------------------------------------------------- |
-| Inbound   | 22       | TCP      | SSH for remote system management                  |
-| Inbound   | 80 / 443 | TCP      | HTTP / HTTPS traffic for web applications         |
-| Outbound  | 53 / 123 | UDP/TCP  | DNS resolution / NTP time synchronization         |
-| Outbound  | 80 / 443 | TCP      | Package repository downloads (archive.ubuntu.com) |
+1. [Introduction](#1-introduction)
+2. [What is Ubuntu](#2-what-is-ubuntu)
+3. [Why Ubuntu](#3-why-ubuntu)
+4. [Software Management in Ubuntu](#4-software-management-in-ubuntu)
+5. [Services in Ubuntu](#5-services-in-ubuntu)
+6. [Best Practices](#6-best-practices)
+7. [Conclusion](#7-conclusion)
+8. [Contact Information](#8-contact-information)
+9. [References](#9-references)
 
 ---
 
-### Architecture & Dataflow
+# 1. Introduction
 
-Ubuntu separates user-space activities from core hardware interactions through a layered model, and manages system state transitions programmatically:
+This document outlines the foundational operating system concepts of Ubuntu. It details the system's architecture, package management methods, and background service execution model, providing administrators and developers with the core guidelines required for consistent local setup and deployments.
+
+---
+
+# 2. What is Ubuntu
+
+Ubuntu is a Debian-based Linux distribution composed of free and open-source software. It features:
+
+- **The Linux Kernel:** Handles process management, system memory, storage, and driver abstraction.
+- **User Space & Shell:** Consists of shell terminals (like Bash), system utilities, libraries, and package systems that allow administrators and programs to interface with the kernel.
+- **Service Management (`systemd`):** Manages bootstrap processes, monitors active services, and coordinates resource allocation.
+- **Package Management (APT/dpkg):** Installs and maintains system libraries, runtimes, and dependencies safely.
+
+---
+
+# 3. Why Ubuntu
+
+Ubuntu is widely chosen as an enterprise and server operating system because:
+
+- **Open Source and Free:** It is free to use and distribute with no licensing costs.
+- **Stability and Security:** Long-Term Support (LTS) releases provide 5 years of predictable updates, security patches, and high stability.
+- **User-Friendly & Strong Community:** Extensive documentation, tutorials, and a large global community make administration and troubleshooting accessible.
+- **Rich Package Ecosystem:** Built-in package management tools (APT) and expansive official repositories make installing and maintaining software dependencies effortless.
+
+---
+
+# 4. Software Management in Ubuntu
+
+Software management in Ubuntu revolves around maintaining the lifecycle of software packages—installing, updating, and removing packages safely while resolving dependency trees.
+
+### Core Concepts:
+
+- **APT (Advanced Package Tool):** A high-level package management command-line utility. It resolves, downloads, and configures required package dependencies automatically from remote repositories.
+- **dpkg:** The low-level package manager that installs local Debian (`.deb`) files directly. It does not resolve dependencies automatically.
+- **Repositories:** Software sources hosted on servers, categorized into *Main* (canonical open-source), *Restricted* (proprietary drivers), *Universe* (community open-source), and *Multiverse* (copyright-restricted).
+
+### Software Installation Workflow:
+
+1. Administrator executes a package install command (e.g., `sudo apt install nginx`).
+2. APT updates the local index database and resolves package dependency hierarchies.
+3. APT downloads the appropriate `.deb` files from remote repositories.
+4. APT calls `dpkg` to unpack the software, place binaries in standard directories, and complete configuration.
 
 ```mermaid
-graph TD
-    UserSpace["User Space (Shell, APT, systemd)"] --> SCI["System Call Interface (SCI)"]
-    SCI --> Kernel["Kernel Space (Process, Memory, Drivers)"]
-    Kernel --> Hardware["Hardware (CPU, RAM, Disk)"]
+sequenceDiagram
+    actor Developer
+    participant APT as APT / dpkg (Package Manager)
+    participant Repos as Ubuntu Repositories
+
+    Developer->>APT: sudo apt install <software>
+    APT->>Repos: Resolve & download dependencies
+    Repos-->>APT: Download deb packages
+    APT->>APT: Install and configure binaries
 ```
 
-#### Process Dataflow:
+---
 
-1. **Software Management:** Admin calls `apt` -> reads repository metadata -> downloads `.deb` -> invokes `dpkg` to extract/configure.
-2. **Service Management:** Admin calls `systemctl` -> `systemd` reads service unit configuration -> spawns background daemon process.
+# 5. Services in Ubuntu
+
+Services (or daemons) are processes running continuously in the background to handle system or application-level activities (like database listeners, web servers, or schedulers).
+
+### Core Concepts:
+
+- **systemd:** The default initialization system (PID 1) and service manager in Ubuntu, starting processes in parallel and supervising their execution.
+- **systemctl:** The main administrative command-line utility used to control systemd services.
+- **Service States:** Service units exist in states such as `active (running)`, `inactive (dead)`, `enabled` (configured to start on boot), and `disabled`.
+- **Logging:** systemd redirects standard output and error streams of services directly to `journald` and `/var/log/syslog` for tracing.
+
+### Service Management Workflow:
+
+1. Developer defines unit configurations in a `.service` file under `/etc/systemd/system/`.
+2. Administrator triggers configuration reload via `systemctl daemon-reload`.
+3. The service is managed (started/stopped/restarted/enabled) via `systemctl` commands.
+4. systemd launches the daemon, monitors its runtime health, and records log streams.
+
+```mermaid
+sequenceDiagram
+    actor Developer
+    participant Systemd as systemd (Service Manager)
+    participant Logs as syslog & journald
+
+    Developer->>Systemd: sudo systemctl start <service>
+    Systemd->>Systemd: Load service unit file
+    Systemd->>Systemd: Spawn service process
+    Systemd->>Logs: Redirect stdout/stderr to log files
+    Systemd-->>Developer: Success status
+```
 
 ---
 
-### Software Management & Services (Acceptance Criteria)
+# 6. Best Practices
 
-#### Software Management:
-
-- **APT (Advanced Package Tool):** High-level command-line tool for package installation. It resolves, downloads, and configures dependencies automatically.
-- **dpkg:** Low-level package manager that installs local `.deb` files directly. Does not download dependencies automatically.
-- **Repositories:** Software sources categorized as: *Main* (supported open-source), *Restricted* (proprietary drivers), *Universe* (community open-source), and *Multiverse* (copyright-restricted).
-
-#### Services Management:
-
-- **systemd:** The initialization system (PID 1) and service manager responsible for booting the OS and running daemons.
-- **systemctl:** The command-line utility used to control systemd and manage service states.
-- **Service States:** `active (running)`, `inactive (dead)`, `enabled` (auto-start at boot), and `disabled` (manual start only).
+| **Best Practice** | **Description** |
+| --- | --- |
+| **Standardize on LTS Versions** | Deploy Ubuntu LTS (Long-Term Support) versions in environments to guarantee security patches for up to 5 years. |
+| **Perform Index Updates Prior to Installs** | Run `sudo apt update` before software installations to prevent package dependency mismatch errors. |
+| **Remove Orphaned Dependencies** | Regularly invoke `sudo apt autoremove` and `sudo apt clean` to free up disk space and eliminate unused libraries. |
+| **Run Daemon Services as Non-Root Users** | Modify systemd service configurations to execute processes using isolated system accounts (e.g., `User=nobody`). |
+| **Inspect System Logs Regularly** | Utilize `journalctl -xe` and monitor `/var/log/syslog` to catch process failures and trace security events. |
 
 ---
 
-### Monitoring & Logging
+# 7. Conclusion
 
-#### OS Metrics & Probes
-
-| Parameter       | Description                                          | Priority | Threshold      |
-| --------------- | ---------------------------------------------------- | -------- | -------------- |
-| CPU / RAM       | Processor and memory resource consumption            | High     | >80% / >85%    |
-| Disk space      | Remaining storage capacity on root`/`              | High     | >90%           |
-| SSH Daemon      | LivenessProbe (Delay: 5s, Period: 10s, Timeout: 2s)  | High     | Max 3 failures |
-| Systemd Service | LivenessProbe (Delay: 10s, Period: 30s, Timeout: 5s) | High     | Max 3 failures |
-
-#### Logging Locations (`/var/log/`)
-
-- `/var/log/syslog`: General system events and daemon logs.
-- `/var/log/auth.log`: Authentication, sudo usage, and login attempts.
-- `/var/log/dpkg.log`: Package installation and removal history.
-- `/var/log/kern.log`: Kernel messages, driver errors, and OOM killer events.
+Ubuntu LTS provides a stable, secure, and well-supported operating system environment. Utilizing **APT** for software management and **systemd** for service management ensures dependable system operations, simple software lifecycles, and reliable background process supervision.
 
 ---
 
-### Disaster Recovery, HA, & Troubleshooting
+# 8. Contact Information
 
-- **Disaster Recovery (DR):** Back up configurations (`/etc/`) and application directories (`/var/www/`) using `rsync` or LVM/cloud snapshots. Automate rebuilding via Ansible.
-- **High Availability (HA):** Run redundant Ubuntu servers behind load balancers (e.g., Nginx, HAProxy) using Keepalived for Virtual IP failover.
-- **Troubleshooting:**
-  - *APT Lock Error:* Kill blocking process (`sudo kill <PID>`) or wait for current package operation to finish.
-  - *Service Failures:* Inspect using `systemctl status <service>` and `journalctl -xeu <service>`.
-  - *Out of Memory:* Scale up RAM, add swap space, and search `/var/log/kern.log` for OOM messages.
+| **Name** | **Email** |
+| --- | --- |
+| Amrendra | [amrendra.yadav.snaatak@mygurukulam.co](mailto:amrendra.yadav.snaatak@mygurukulam.co) |
 
 ---
 
-### FAQs & Conclusion
+# 9. References
 
-- **Q: Is Ubuntu free?** Yes, it is open-source and free of licensing costs.
-- **Q: Can it be deployed in the cloud?** Yes, Ubuntu is supported on all major cloud providers (AWS, Azure, GCP).
-- **Q: Desktop vs. Server?** Desktop has a graphical UI; Server is CLI-only, lightweight, and optimized for performance.
-
-**Conclusion:** Understanding Ubuntu's core software package structures and systemd service management forms the baseline requirement for maintaining stable and automated DevOps infrastructures.
-
----
-
-### Contact & References
-
-| Contact Name | Email address                                                                         |
-| ------------ | ------------------------------------------------------------------------------------- |
-| amrendra     | [amrendra.yadav.snaatak@mygurukulam.co](mailto:amrendra.yadav.snaatak@mygurukulam.co)  |
-
-| References                                                        | Descriptions                |
-| ----------------------------------------------------------------- | --------------------------- |
-| [Ubuntu Docs](https://ubuntu.com/server/docs)                      | Official server guides      |
-| [systemd Docs](https://www.freedesktop.org/wiki/Software/systemd/) | systemd init reference      |
-| [Debian APT Wiki](https://wiki.debian.org/Apt)                     | Advanced Package Tool guide |
+| **Topic** | **Description** |
+| --- | --- |
+| [Ubuntu Server Guide](https://ubuntu.com/server/docs) | Official administration and setup guides for Ubuntu Server. |
+| [systemd Documentation](https://www.freedesktop.org/wiki/Software/systemd/) | Complete details on the systemd initialization system. |
+| [Debian APT Wiki](https://wiki.debian.org/Apt) | Deep dive documentation on the Advanced Package Tool. |

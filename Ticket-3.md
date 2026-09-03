@@ -8,7 +8,7 @@
 
 | **Author** | **Created&nbsp;On** | **Version** | **Last&nbsp;Edited&nbsp;On** | **L0 Reviewer** | **L1 Reviewer** | **L2 Reviewer** |
 | --- | --- | --- | --- | --- | --- | --- |
-| Amrendra | 24&#8209;08&#8209;2026 | 1.0 | 24&#8209;08&#8209;2026 | Shubham Rathi<L0 Reviewer></l0> | Shreya J/ Nikita<L1 Reviewer></l1> | Piyush Upadhyay<L2 Reviewer></l2> |
+| Amrendra | 24&#8209;08&#8209;2026 | 1.1 | 03&#8209;09&#8209;2026 | Shubham Rathi<L0 Reviewer></l0> | Shreya J/ Nikita<L1 Reviewer></l1> | Piyush Upadhyay<L2 Reviewer></l2> |
 
 ---
 
@@ -34,87 +34,52 @@ This document outlines the foundational operating system concepts of Ubuntu. It 
 
 # 2. What is Ubuntu
 
-Ubuntu is a Debian-based Linux distribution composed of free and open-source software. It features:
+Ubuntu is an open-source, Debian-based Linux operating system designed for desktops, enterprise servers, and cloud infrastructure.
 
-- **The Linux Kernel:** Handles process management, system memory, storage, and driver abstraction.
-- **User Space & Shell:** Consists of shell terminals (like Bash), system utilities, libraries, and package systems that allow administrators and programs to interface with the kernel.
-- **Service Management (`systemd`):** Manages bootstrap processes, monitors active services, and coordinates resource allocation.
-- **Package Management (APT/dpkg):** Installs and maintains system libraries, runtimes, and dependencies safely.
+| **Component** | **Description** |
+| --- | --- |
+| **Linux Kernel** | Core engine managing hardware resources (CPU, memory, storage, devices). |
+| **User Space & Shell** | Command-line environment (Bash) and utilities for user interaction. |
+| **Service Manager (`systemd`)** | System init system (PID 1) that bootstraps and supervises background processes. |
+| **Package Manager (APT/dpkg)** | Package ecosystem for installing, upgrading, and managing software libraries. |
 
 ---
 
 # 3. Why Ubuntu
 
-Ubuntu is widely chosen as an enterprise and server operating system because:
-
-- **Open Source and Free:** It is free to use and distribute with no licensing costs.
-- **Stability and Security:** Long-Term Support (LTS) releases provide 5 years of predictable updates, security patches, and high stability.
-- **User-Friendly & Strong Community:** Extensive documentation, tutorials, and a large global community make administration and troubleshooting accessible.
-- **Rich Package Ecosystem:** Built-in package management tools (APT) and expansive official repositories make installing and maintaining software dependencies effortless.
+| **Feature** | **Key Benefit** |
+| --- | --- |
+| **Open Source & Free** | Zero licensing fees, reducing operational costs across deployments. |
+| **LTS Stability** | Long-Term Support releases offer 5 years of guaranteed security updates. |
+| **Rich Ecosystem** | Massive official repositories provide pre-compiled, verified software packages. |
+| **Strong Community** | Comprehensive documentation and global support forums simplify troubleshooting. |
 
 ---
 
 # 4. Software Management in Ubuntu
 
-Software management in Ubuntu revolves around maintaining the lifecycle of software packages—installing, updating, and removing packages safely while resolving dependency trees.
+Software management in Ubuntu refers to the tools and repositories used to install, update, and maintain applications while resolving package dependencies.
 
-### Core Concepts:
-
-- **APT (Advanced Package Tool):** A high-level package management command-line utility. It resolves, downloads, and configures required package dependencies automatically from remote repositories.
-- **dpkg:** The low-level package manager that installs local Debian (`.deb`) files directly. It does not resolve dependencies automatically.
-- **Repositories:** Software sources hosted on servers, categorized into *Main* (canonical open-source), *Restricted* (proprietary drivers), *Universe* (community open-source), and *Multiverse* (copyright-restricted).
-
-### Software Installation Workflow:
-
-1. Administrator executes a package install command (e.g., `sudo apt install nginx`).
-2. APT updates the local index database and resolves package dependency hierarchies.
-3. APT downloads the appropriate `.deb` files from remote repositories.
-4. APT calls `dpkg` to unpack the software, place binaries in standard directories, and complete configuration.
-
-```mermaid
-sequenceDiagram
-    actor Developer
-    participant APT as APT / dpkg (Package Manager)
-    participant Repos as Ubuntu Repositories
-
-    Developer->>APT: sudo apt install <software>
-    APT->>Repos: Resolve & download dependencies
-    Repos-->>APT: Download deb packages
-    APT->>APT: Install and configure binaries
-```
+| **Core Concept** | **Role / Definition** | **Description** |
+| --- | --- | --- |
+| **APT (Advanced Package Tool)** | High-level Package Manager | Resolves dependencies automatically and downloads packages from repositories. |
+| **dpkg (Debian Package)** | Low-level Package Installer | Directly installs and inspects local `.deb` files without dependency resolution. |
+| **Repositories** | Central Software Archives | Server collections hosting official and community packages (*Main*, *Restricted*, *Universe*, *Multiverse*). |
+| **Dependencies** | Software Prerequisites | Shared libraries or packages required by an application to execute correctly. |
 
 ---
 
 # 5. Services in Ubuntu
 
-Services (or daemons) are processes running continuously in the background to handle system or application-level activities (like database listeners, web servers, or schedulers).
+A service is a program that runs in the background to provide functionality to the operating system or other applications
 
-### Core Concepts:
-
-- **systemd:** The default initialization system (PID 1) and service manager in Ubuntu, starting processes in parallel and supervising their execution.
-- **systemctl:** The main administrative command-line utility used to control systemd services.
-- **Service States:** Service units exist in states such as `active (running)`, `inactive (dead)`, `enabled` (configured to start on boot), and `disabled`.
-- **Logging:** systemd redirects standard output and error streams of services directly to `journald` and `/var/log/syslog` for tracing.
-
-### Service Management Workflow:
-
-1. Developer defines unit configurations in a `.service` file under `/etc/systemd/system/`.
-2. Administrator triggers configuration reload via `systemctl daemon-reload`.
-3. The service is managed (started/stopped/restarted/enabled) via `systemctl` commands.
-4. systemd launches the daemon, monitors its runtime health, and records log streams.
-
-```mermaid
-sequenceDiagram
-    actor Developer
-    participant Systemd as systemd (Service Manager)
-    participant Logs as syslog & journald
-
-    Developer->>Systemd: sudo systemctl start <service>
-    Systemd->>Systemd: Load service unit file
-    Systemd->>Systemd: Spawn service process
-    Systemd->>Logs: Redirect stdout/stderr to log files
-    Systemd-->>Developer: Success status
-```
+| **Core Concept** | **Role / Definition** | **Description** |
+| --- | --- | --- |
+| **`systemd`** | System & Service Manager | The init process (PID 1) responsible for bootstrapping user space and supervising services. |
+| **`systemctl`** | Management Utility | Command-line tool used to inspect and control `systemd` service configurations. |
+| **Service States** | Process Status | Current operational status of a service (e.g., `active/running`, `inactive/dead`, `failed`). |
+| **Service Startup Modes** | Boot Configuration | Settings determining whether a service launches automatically at boot (`enabled`) or manually (`disabled`). |
+| **Logging (`journald`)** | Log Management Engine | Service logging component capturing standard output and system messages in `/var/log/`. |
 
 ---
 
@@ -126,7 +91,7 @@ sequenceDiagram
 | **Perform Index Updates Prior to Installs** | Run `sudo apt update` before software installations to prevent package dependency mismatch errors. |
 | **Remove Orphaned Dependencies** | Regularly invoke `sudo apt autoremove` and `sudo apt clean` to free up disk space and eliminate unused libraries. |
 | **Run Daemon Services as Non-Root Users** | Modify systemd service configurations to execute processes using isolated system accounts (e.g., `User=nobody`). |
-| **Inspect System Logs Regularly** | Utilize `journalctl -xe` and monitor `/var/log/syslog` to catch process failures and trace security events. |
+| **Inspect System Logs Regularly** | Utilize `journalctl` and monitor `/var/log/syslog` to catch process failures and trace security events. |
 
 ---
 

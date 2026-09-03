@@ -1,8 +1,9 @@
 # React JS Installation via Bash Script
+<p align="center">
+<img width="200" height="150" alt="reactjs" src="https://github.com/user-attachments/assets/7b6b7423-113e-4903-a9cc-c084b26e14f5" />
+</p>
 
----
-
-## Author Table
+## Document Information
 
 | **Author** | **Created on** | **Version** | **L0 Reviewer** | **L1 Reviewer** | **L2 Reviewer** |
 | ---------------- | -------------------- | ----------------- | --------------------- | --------------------- | --------------------- |

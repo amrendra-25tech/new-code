@@ -1,6 +1,7 @@
 # Java  Installation Guide Documentation
 <p align="center">
-<img width="200" height="150" alt="java-logo-png_seeklogo-158094" src="https://github.com/user-attachments/assets/e4e3b14c-abae-471b-8938-369b0b450611" />
+<img width="200" height="150" alt="java-logo-png_seeklogo-158094" src="https://github.com/user-attachments/assets/6d80fbc0-c95d-4ea7-b9b1-94c6f6edb9b9" />
+
 </p>
 
 # Document Information
@@ -14,43 +15,28 @@
 # Table of Contents
 
 1. [Introduction](#1-introduction)
-2. [What is Java](#2-what-is-java)
-3. [What is Java Installation](#3-what-is-java-installation)
-4. [Why Java Installation is Required](#4-why-java-installation-is-required)
-5. [Java Installation Guide Workflow](#5-java-installation-guide-workflow)
-   - [5.1 Workflow Diagram](#51-workflow-diagram)
-6. [Different Tools for Java Installation](#6-different-tools-for-java-installation)
-7. [Best Practices](#7-best-practices)
-   - [7.1 Detailed Windows Setup & Verification](#71-detailed-windows-setup--verification)
-   - [7.2 Detailed Ubuntu/Linux Setup & Verification](#72-detailed-ubuntulinux-setup--verification)
-   - [7.3 Troubleshooting Guidelines](#73-troubleshooting-guidelines)
-   - [7.4 Useful Commands Reference](#74-useful-commands-reference)
-8. [Recommendation / Conclusion](#8-recommendation--conclusion)
-9. [Contact Information](#9-contact-information)
-10. [References](#10-references)
+2. [What is Java Installation](#2-what-is-java-installation)
+3. [Prerequisites](#3-prerequisites)
+4. [Java Installation Guide Workflow](#4-java-installation-guide-workflow)
+   - [4.1 Workflow Diagram](#41-workflow-diagram)
+   - [4.2 Detailed Windows Setup & Verification](#42-detailed-windows-setup--verification)
+   - [4.3 Detailed Ubuntu/Linux Setup & Verification](#43-detailed-ubuntulinux-setup--verification)
+5. [Different Tools for Java Installation](#5-different-tools-for-java-installation)
+6. [Recommendation / Conclusion](#6-recommendation--conclusion)
+7. [Contact Information](#7-contact-information)
+8. [References](#8-references)
 
 ---
 
 # 1. Introduction
 
-This document serves as a step-by-step setup guide for installing and configuring the Java Development Kit (JDK) on Windows and Ubuntu/Linux systems. It provides standard procedures to install JDK 25, configure environment variables, verify installations, and troubleshoot common setup issues.
+This document serves as a step-by-step setup guide for installing and configuring the Java Development Kit (JDK) on Windows and Ubuntu/Linux systems. It provides standard procedures to install JDK 25 (LTS version 25.0.4.1), configure environment variables, and verify installations.
 
 ---
 
-# 2. What is Java
+# 2. What is Java Installation
 
-Java is a popular, object-oriented programming language used for building web, mobile, and enterprise applications. It runs on any device using the Java Virtual Machine (JVM). This guide uses Java JDK 25 LTS (version 25.0.4.1).
-
----
-
-# 3. What is Java Installation
-
-Java installation is the process of setting up the Java runtime environment and development tools on Windows or Ubuntu/Linux systems. Before installing Java, make sure you have:
-
-* A computer with Windows or Linux.
-* Administrator/sudo access.
-* An active internet connection.
-* Sufficient disk space for the JDK installation.
+Java installation is the process of setting up the Java runtime environment and development tools on Windows or Ubuntu/Linux systems.
 
 ### JDK vs JRE vs JVM
 
@@ -58,39 +44,26 @@ Java installation is the process of setting up the Java runtime environment and 
 | ------------- | --------------------------------------------------------------------------------- |
 | **JDK** | Java Development Kit. Used to develop, compile, debug, and run Java applications. |
 | **JRE** | Java Runtime Environment. Used to run Java applications.                          |
-| **JVM** | Java Virtual Machine. Executes Java bytecode                                      |
+| **JVM** | Java Virtual Machine. Executes Java bytecode.                                     |
 
 ---
 
-# 4. Why Java Installation is Required
+# 3. Prerequisites
 
-Configuring the Java JDK environment is essential for several reasons:
-
-- **Development Capabilities:** The JDK provides the compiler (`javac`) and other development tools required to convert human-readable source code into machine-executable bytecode.
-- **Application Execution:** Running modern enterprise services, CI/CD utilities (such as Jenkins runner nodes), and server platforms requires a stable Java Virtual Machine (JVM).
-- **Tool Integration:** Build systems like Maven or Gradle and code checkers rely on the `JAVA_HOME` environment variable to locate standard libraries and compiler tools.
+| **Prerequisite** | **Requirement / Specification** |
+| :--- | :--- |
+| **Operating System** | Computer running Windows or Linux |
+| **System Privileges** | Administrator access (Windows) or `sudo` privileges (Linux) |
+| **Network** | Active internet connection to download JDK packages |
+| **Disk Space** | Sufficient storage space for the JDK installation |
 
 ---
 
-# 5. Java Installation Guide Workflow
+# 4. Java Installation Guide Workflow
 
-The installation workflow varies between operating systems. Below is a unified workflow covering both Windows and Linux installations.
+The installation workflow outlines the end-to-end setup procedure for both Windows and Linux platforms.
 
-### Windows Installation Workflow:
-
-1. **Download:** Download the Windows x64 Installer (.exe) from Oracle.
-2. **Execute:** Run the installer and complete the installation wizard.
-3. **Environment Setup:** Configure the `JAVA_HOME` system variable and edit the system `PATH` variable.
-4. **Verification:** Validate the setup using version and location checks.
-
-### Ubuntu/Linux Installation Workflow:
-
-1. **Repository Sync:** Update local repository information.
-2. **Package Install:** Install OpenJDK 25 using `apt`.
-3. **Paths configuration:** Configure `JAVA_HOME` and update the shell profile (`.bashrc`).
-4. **Alternatives Config:** Manage multiple runtime targets via `update-alternatives`.
-
-## 5.1 Workflow Diagram
+## 4.1 Workflow Diagram
 
 ```mermaid
 graph TD
@@ -114,9 +87,28 @@ graph TD
     LinVerify --> End
 ```
 
+### 4.2 Detailed Windows Setup & Verification
+
+| **Step** | **Task** | **Instructions** | **Commands** |
+| :---: | :--- | :--- | :--- |
+| **1** | **Download & Install** | Download the Windows x64 Installer (.exe) from Oracle and install using default path (`C:\Program Files\Java\`). | — |
+| **2** | **Set `JAVA_HOME`** | Open System Properties > Advanced > Environment Variables. Add `JAVA_HOME` under System variables. | `sysdm.cpl`<br>Name: `JAVA_HOME`<br>Value: `C:\Program Files\Java\jdk-25` |
+| **3** | **Update `PATH`** | Edit `Path` under System variables and append the JDK `bin` folder. | `%JAVA_HOME%\bin` |
+| **4** | **Verification** | Open a new Command Prompt and verify runtime, compiler, paths, and environment variable. | `java -version`<br>`javac -version`<br>`where java`<br>`where javac`<br>`echo %JAVA_HOME%` |
+
+### 4.3 Detailed Ubuntu/Linux Setup & Verification
+
+| **Step** | **Task** | **Instructions** | **Commands** |
+| :---: | :--- | :--- | :--- |
+| **1** | **Install OpenJDK** | Update package cache and install OpenJDK 25. | `sudo apt update`<br>`sudo apt install -y openjdk-25-jdk` |
+| **2** | **Determine Install Path** | Locate the absolute path of the Java binary. | `readlink -f $(which java)` |
+| **3** | **Configure `JAVA_HOME` & `PATH`** | Append environment variables to `~/.bashrc` and reload the shell profile. | `export JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64`<br>`export PATH=$JAVA_HOME/bin:$PATH`<br>`source ~/.bashrc` |
+| **4** | **Verification** | Open a terminal and verify runtime, compiler, paths, and environment variable. | `java -version`<br>`javac -version`<br>`which java`<br>`which javac`<br>`echo $JAVA_HOME` |
+| **5** | **Manage Versions** | (Optional) View installed versions and select the active runtime or compiler if multiple JDKs exist. | `update-java-alternatives --list`<br>`sudo update-alternatives --config java`<br>`sudo update-alternatives --config javac` |
+
 ---
 
-# 6. Different Tools for Java Installation
+# 5. Different Tools for Java Installation
 
 | **Tool**                      | **Description**                                                                                   |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -126,64 +118,13 @@ graph TD
 
 ---
 
-# 7. Best Practices
-
-| **Best Practice** | **Description** |
-| ----------------- | --------------- |
-| **Use LTS Versions** | Choose LTS releases (like JDK 25) for stability and extended support. |
-| **Set JAVA_HOME** | Configure `JAVA_HOME` permanently in system variables or `~/.bashrc`. |
-| **Update System PATH** | Add `%JAVA_HOME%\bin` or `$JAVA_HOME/bin` to `PATH` for global command access. |
-| **Use Package Managers** | Use `apt` on Linux for automated dependencies and security patches. |
-| **Manage Multiple Versions** | Use `update-alternatives` (Linux) or path priority (Windows) to switch JDKs. |
-| **Verify Full JDK** | Check both `java -version` and `javac -version` to confirm complete JDK setup. |
-
-### 7.1 Detailed Windows Setup & Verification
-
-| **Step** | **Task** | **Instructions** | **Commands** |
-| :---: | :--- | :--- | :--- |
-| **1** | **Download & Install** | Download the Windows x64 Installer (.exe) from Oracle and install using default path (`C:\Program Files\Java\`). | — |
-| **2** | **Set `JAVA_HOME`** | Open System Properties > Advanced > Environment Variables. Add `JAVA_HOME` under System variables. | `sysdm.cpl`<br>Name: `JAVA_HOME`<br>Value: `C:\Program Files\Java\jdk-25` |
-| **3** | **Update `PATH`** | Edit `Path` under System variables and append the JDK `bin` folder. | `%JAVA_HOME%\bin` |
-| **4** | **Verification** | Open a new Command Prompt and verify runtime, compiler, paths, and environment variable. | `java -version`<br>`javac -version`<br>`where java`<br>`where javac`<br>`echo %JAVA_HOME%` |
-
-### 7.2 Detailed Ubuntu/Linux Setup & Verification
-
-| **Step** | **Task** | **Instructions** | **Commands** |
-| :---: | :--- | :--- | :--- |
-| **1** | **Install OpenJDK** | Update package cache and install OpenJDK 25. | `sudo apt update`<br>`sudo apt install -y openjdk-25-jdk` |
-| **2** | **Find Install Path** | Locate the absolute path of the Java binary. | `readlink -f $(which java)` |
-| **3** | **Set `JAVA_HOME`** | Append environment variables to `~/.bashrc` and reload the shell profile. | `export JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64`<br>`export PATH=$JAVA_HOME/bin:$PATH`<br>`source ~/.bashrc`<br>`echo $JAVA_HOME` |
-| **4** | **Manage Versions** | List installed versions and select the active runtime or compiler. | `update-java-alternatives --list`<br>`sudo update-alternatives --config java`<br>`sudo update-alternatives --config javac` |
-
-### 7.3 Troubleshooting Guidelines
-
-| **Problem** | **Possible Cause** | **Solution** |
-| ----------- | ------------------ | ------------ |
-| **'java' is not recognized** | Java is not installed, not included in PATH, or the terminal was opened before path updates. | Check `echo %JAVA_HOME%` or `where java`. Add `%JAVA_HOME%\bin` to the Path variables and restart the terminal. |
-| **'javac' is not recognized** | You may have installed JRE only, or compilation bin routes are missing. | Install the full JDK and ensure `%JAVA_HOME%\bin` (Windows) or `$JAVA_HOME/bin` (Linux) is added to the Path variables. |
-| **Wrong Java Version** | Multiple Java versions are present and an unintended path takes precedence. | **Windows:** Run `where java` and adjust path priorities in `Path`.<br>**Linux:** Use `sudo update-alternatives --config java` (and `javac`) to choose the active version. |
-
-### 7.4 Useful Commands Reference
-
-| Purpose | Windows | Linux |
-| :--- | :--- | :--- |
-| **Check version** | `java -version` | `java -version` |
-| **Check compiler** | `javac -version` | `javac -version` |
-| **Find java** | `where java` | `which java` |
-| **Find javac** | `where javac` | `which javac` |
-| **Check JAVA_HOME** | `echo %JAVA_HOME%` | `echo $JAVA_HOME` |
-| **Compile** | `javac File.java` | `javac File.java` |
-| **Run** | `java ClassName` | `java ClassName` |
-
----
-
-# 8. Recommendation / Conclusion
+# 6. Recommendation / Conclusion
 
 Java installation is complete when `java -version` and `javac -version` execute successfully on the terminal. For standard environments, deploying **OpenJDK 25 (LTS)** (specifically version **25.0.4.1**) using package managers (APT on Ubuntu) or standard setup binaries (on Windows) is recommended. Setting the system environment variable `JAVA_HOME` and updating `PATH` completes the configuration, leaving the system fully ready for Java application development.
 
 ---
 
-# 9. Contact Information
+# 7. Contact Information
 
 | **Name** | **Email**                                                                      |
 | -------------- | ------------------------------------------------------------------------------------ |
@@ -191,7 +132,7 @@ Java installation is complete when `java -version` and `javac -version` execute 
 
 ---
 
-# 10. References
+# 8. References
 
 | **Topic**                                                                                              | **Description**                                       |
 | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |

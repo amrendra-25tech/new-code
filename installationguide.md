@@ -1,14 +1,14 @@
 # Java  Installation Guide Documentation
 <p align="center">
-<img width="200" height="150" alt="java-logo-png_seeklogo-158094" src="https://github.com/user-attachments/assets/6d80fbc0-c95d-4ea7-b9b1-94c6f6edb9b9" />
+<img width="200" height="150" alt="java-logo-png_seeklogo-158094" src="https://github.com/user-attachments/assets/41d25d84-bbcc-405c-89da-fcba8221a12d" />
 
 </p>
 
 # Document Information
 
-| **Author** | **Created On** | **Version** | **L0 Reviewer**           | **L1 Reviewer**             | **L2 Reviewer**             |
+| **Author** | **Created On** | **Version** |  **L0 Reviewer**           | **L1 Reviewer**             | **L2 Reviewer**             |
 | ---------------- | -------------------- | ----------------- | ------------------------------- | --------------------------------- | --------------------------------- |
-| Amrendra         | 25-08-2026           | 1.0               | Shubham Rathi<L0 Reviewer></l0> | Shreya J/Nikita<L1 Reviewer></l1> | Piyush Upadhyay<L2 Reviewer></l2> |
+| Amrendra         | 25-08-2026           | 1.0                              | Shubham Rathi<L0 Reviewer></l0> | Shreya J/Nikita<L1 Reviewer></l1> | Piyush Upadhyay<L2 Reviewer></l2> |
 
 ---
 
@@ -16,7 +16,7 @@
 
 1. [Introduction](#1-introduction)
 2. [What is Java Installation](#2-what-is-java-installation)
-3. [Prerequisites](#3-prerequisites)
+3. [Pre-requisites](#3-pre-requisites)
 4. [Java Installation Guide Workflow](#4-java-installation-guide-workflow)
    - [4.1 Workflow Diagram](#41-workflow-diagram)
    - [4.2 Detailed Windows Setup & Verification](#42-detailed-windows-setup--verification)
@@ -48,14 +48,14 @@ Java installation is the process of setting up the Java runtime environment and 
 
 ---
 
-# 3. Prerequisites
+# 3. Pre-requisites
 
-| **Prerequisite** | **Requirement / Specification** |
+| **Pre-requisite** | **Requirement / Specification** |
 | :--- | :--- |
 | **Operating System** | Computer running Windows or Linux |
 | **System Privileges** | Administrator access (Windows) or `sudo` privileges (Linux) |
 | **Network** | Active internet connection to download JDK packages |
-| **Disk Space** | Sufficient storage space for the JDK installation |
+| **Disk Space** | Minimum 500 MB (1 GB – 2 GB recommended for build artifacts) |
 
 ---
 
@@ -91,7 +91,7 @@ graph TD
 
 | **Step** | **Task** | **Instructions** | **Commands** |
 | :---: | :--- | :--- | :--- |
-| **1** | **Download & Install** | Download the Windows x64 Installer (.exe) from Oracle and install using default path (`C:\Program Files\Java\`). | — |
+| **1** | **Download & Install** | Download the Windows x64 Installer (.exe) from Oracle and install using default path (`C:\Program Files\Java\`). | `.\jdk-25_windows-x64_bin.exe /s` |
 | **2** | **Set `JAVA_HOME`** | Open System Properties > Advanced > Environment Variables. Add `JAVA_HOME` under System variables. | `sysdm.cpl`<br>Name: `JAVA_HOME`<br>Value: `C:\Program Files\Java\jdk-25` |
 | **3** | **Update `PATH`** | Edit `Path` under System variables and append the JDK `bin` folder. | `%JAVA_HOME%\bin` |
 | **4** | **Verification** | Open a new Command Prompt and verify runtime, compiler, paths, and environment variable. | `java -version`<br>`javac -version`<br>`where java`<br>`where javac`<br>`echo %JAVA_HOME%` |

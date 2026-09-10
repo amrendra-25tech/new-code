@@ -1,14 +1,14 @@
 # Golang Installation via Bash Script
+
 <p align="center">
 <img width="200" height="150" alt="Go-Logo_Aqua" src="https://github.com/user-attachments/assets/950bb6ed-9301-4c7b-b2d3-0abc7082a718" />
 </p>
-
 
 ## Document Information
 
 | **Author** | **Created on** | **Version** | **Last Edited On** | **L0 Reviewer** | **L1 Reviewer** | **L2 Reviewer** |
 | ---------------- | -------------------- | ----------------- | ------------------------ | --------------------- | --------------------- | --------------------- |
-| Amrendra         | 30-08-2026           | 1.1               | 07-09-2026               | Shubham Rathi         | Shreya J/Nikita       | Piyush Upadhyay       |
+| Amrendra         | 30-08-2026           | 1.2              | 10-09-2026               | Shubham Rathi         | Shreya J/Nikita       | Piyush Upadhyay       |
 
 ---
 
@@ -54,30 +54,60 @@ Add the following content:
 ```bash
 #!/bin/bash
 
-# Define Go version (default: 1.22.0 or pass argument e.g. 1.23.0)
+# Exit immediately if a command fails
+set -e
+
+# Define Go version
+# Default: 1.22.0
+# Example: ./install-go.sh 1.23.0
 GO_VERSION=${1:-1.22.0}
 
+# Go download URL
+GO_URL="https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz"
+
+# Temporary download location
+GO_ARCHIVE="/tmp/go${GO_VERSION}.linux-amd64.tar.gz"
+
+echo "======================================"
+echo "Installing Go ${GO_VERSION}"
+echo "======================================"
+
 # Update system packages
+echo "[1/6] Updating system packages..."
 sudo apt update -y
 
-# Download Go binary
-wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
+# Download Go
+echo "[2/6] Downloading Go ${GO_VERSION}..."
+wget -q -O "$GO_ARCHIVE" "$GO_URL"
 
-# Remove any existing Go installation
+
+# Remove existing Go installation
+echo "[3/6] Removing existing Go installation..."
 sudo rm -rf /usr/local/go
 
 # Extract Go
-sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
+echo "[4/6] Extracting Go..."
+sudo tar -C /usr/local -xzf "$GO_ARCHIVE"
 
-# Set environment variables
-export PATH=$PATH:/usr/local/go/bin
-echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
+# Remove downloaded archive
+echo "[5/6] Cleaning up..."
+rm -f "$GO_ARCHIVE"
 
-# Reload environment
+# Add Go to PATH if not already present
+if ! grep -q '/usr/local/go/bin' ~/.bashrc; then
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+fi
+
+# Reload .bashrc
 source ~/.bashrc
 
 # Verify installation
+echo "[6/6] Verifying Go installation..."
 go version
+
+echo "======================================"
+echo "Go ${GO_VERSION} installed successfully!"
+echo "======================================"
 ```
 
 Make the script executable:
@@ -102,16 +132,20 @@ Or install / upgrade to any specific version:
 
 ## 4. Script Explanation
 
-| **Command / Step**                        | **Description**                                                          |
-| ----------------------------------------------- | ------------------------------------------------------------------------------ |
-| `GO_VERSION=${1:-1.22.0}`                     | Dynamically accepts target Go version as an argument, or defaults to 1.22.0    |
-| `sudo apt update -y`                          | Updates local package repository index                                         |
-| `wget https://...`                            | Downloads the official Go archive for the specified version                    |
-| `sudo rm -rf /usr/local/go`                   | Removes previous Go installation to enable clean version upgrades              |
-| `sudo tar -C /usr/local -xzf ...`             | Extracts Go package into`/usr/local` directory                               |
-| `export PATH=...` & `echo ... >> ~/.bashrc` | Appends Go binary path to`PATH` in both active shell and `.bashrc` profile |
-| `source ~/.bashrc`                            | Reloads environment variables in the user's shell configuration                |
-| `go version`                                  | Verifies the installed or upgraded Go version                                  |
+| **Command / Step**               | **Description**                                                                          |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `set -e`                             | Immediately stops script execution if any command fails                                        |
+| `GO_VERSION=${1:-1.22.0}`            | Sets target Go version from argument or defaults to 1.22.0                                     |
+| `GO_URL=...` & `GO_ARCHIVE=...`    | Defines the official download URL and specifies`/tmp` as the download path                   |
+| `sudo apt update -y`                 | Updates local package repository index                                                         |
+| `wget -q -O "$GO_ARCHIVE" "$GO_URL"` | Downloads the Go archive quietly to the`/tmp` directory                                      |
+| `if [ ! -f "$GO_ARCHIVE" ]`          | Validates archive existence to prevent extracting a missing or failed download                 |
+| `sudo rm -rf /usr/local/go`          | Removes previous Go installation to guarantee a clean version upgrade                          |
+| `sudo tar -C /usr/local -xzf ...`    | Extracts Go binaries into`/usr/local` directory                                              |
+| `rm -f "$GO_ARCHIVE"`                | Deletes the downloaded archive from`/tmp` to prevent disk clutter                            |
+| `if ! grep -q ...`                   | Appends Go binary path to`~/.bashrc` only if not already present, avoiding duplicate entries |
+| `source ~/.bashrc`                   | Reloads environment variables in the user's shell configuration                                |
+| `go version`                         | Verifies the installed or upgraded Go version                                                  |
 
 ---
 
@@ -126,12 +160,15 @@ Or install / upgrade to any specific version:
 
 ## 6. Best Practices
 
-| **Best Practice**      | **Recommendation / Description**                                                |
-| ---------------------------- | ------------------------------------------------------------------------------------- |
-| **Version Stability**  | Always deploy official and stable Go releases                                         |
-| **Routine Updates**    | Keep the Go environment updated to receive security patches                           |
-| **Version Management** | Utilize version managers or explicit paths if multi-version environments are required |
-| **Version Control**    | Maintain the installation script in a centralized Git repository                      |
+| **Best Practice**              | **Recommendation / Description**                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------------------------ |
+| **Version Stability**          | Always deploy official and stable Go releases                                              |
+| **Routine Updates**            | Keep the Go environment updated to receive security patches                                |
+| **Use `/tmp` for Downloads** | Download temporary archives to`/tmp` so working directories remain clean                 |
+| **Immediate Cleanup**          | Delete the`.tar.gz` archive immediately after extraction to conserve disk space          |
+| **Idempotent Profile Updates** | Check`~/.bashrc` before appending `PATH` to avoid duplicate lines on repeated upgrades |
+| **Fail Fast (`set -e`)**     | Use`set -e` to prevent partial or corrupted installations when a command fails           |
+| **Version Control**            | Maintain the installation script in a centralized Git repository                           |
 
 ---
 

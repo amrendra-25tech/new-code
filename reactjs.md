@@ -1,14 +1,12 @@
 # React JS Installation via Bash Script
-<p align="center">
-<img width="200" height="150" alt="reactjs" src="https://github.com/user-attachments/assets/7b6b7423-113e-4903-a9cc-c084b26e14f5" />
-</p>
 
+---
 
-## Author Table
+## Document Information
 
 | **Author** | **Created on** | **Version** | **Last Edited On** | **L0 Reviewer** | **L1 Reviewer** | **L2 Reviewer** |
 | ---------- | -------------- | ----------- | ------------------ | --------------- | --------------- | --------------- |
-| Amrendra   | 03-09-2026     | 1.1        | 07-09-2026         | Shubham Rathi   | Shreya J/Nikita | Piyush Upadhyay |
+| Amrendra   | 03-09-2026     | 1.1        | 11-09-2026         | Shubham Rathi   | Shreya J/Nikita | Piyush Upadhyay |
 
 ---
 
@@ -20,9 +18,8 @@
 4. [Script Explanation](#4-script-explanation)
 5. [Verification](#5-verification)
 6. [Best Practices](#6-best-practices)
-7. [Conclusion](#7-conclusion)
-8. [Contact Information](#8-contact-information)
-9. [References](#9-references)
+7. [Contact Information](#7-contact-information)
+8. [References](#8-references)
 
 ---
 
@@ -55,23 +52,48 @@ Add the following content:
 ```bash
 #!/bin/bash
 
-# Target React version (default: latest, or pass e.g. 18.2.0)
+# Exit immediately if a command fails
+set -e
+
+# Define React version
+# Default: latest
+# Example: ./install-react.sh 18.2.0
 REACT_VERSION=${1:-latest}
 
-# Update system packages and install curl
-sudo apt update -y && sudo apt install -y curl
+echo "======================================"
+echo "Installing React JS ${REACT_VERSION}"
+echo "======================================"
 
-# Install Node.js LTS and npm
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
+# Update system packages
+echo "[1/5] Updating system packages..."
+sudo apt update -y
+
+# Install curl
+echo "[2/5] Ensuring curl is installed..."
+sudo apt install -y curl
+
+# Install Node.js LTS and npm if not already present
+echo "[3/5] Setting up Node.js LTS and npm..."
+if ! command -v node &> /dev/null || ! command -v npm &> /dev/null; then
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    sudo apt install -y nodejs
+else
+    echo "Node.js ($(node -v)) and npm ($(npm -v)) are already installed."
+fi
 
 # Install or upgrade React and ReactDOM globally
-sudo npm install -g react@$REACT_VERSION react-dom@$REACT_VERSION
+echo "[4/5] Installing/Upgrading React and ReactDOM (${REACT_VERSION})..."
+sudo npm install -g react@${REACT_VERSION} react-dom@${REACT_VERSION}
 
 # Verify installation
+echo "[5/5] Verifying installation..."
 node -v
 npm -v
 npm list -g react react-dom
+
+echo "======================================"
+echo "React JS ${REACT_VERSION} installed successfully!"
+echo "======================================"
 ```
 
 Make the script executable:
@@ -98,11 +120,12 @@ Or install/upgrade to a specific React version:
 
 | **Command / Step** | **Description** |
 | ------------------ | --------------- |
-| `REACT_VERSION=${1:-latest}` | Sets target React version dynamically from argument or defaults to latest |
-| `sudo apt update -y && sudo apt install -y curl` | Updates system package repository and ensures curl is available |
-| `curl -fsSL ... \| sudo -E bash -` | Configures NodeSource repository for Node.js LTS (v20.x) |
-| `sudo apt install -y nodejs` | Installs Node.js runtime and bundled npm package manager |
-| `sudo npm install -g react@...` | Installs or upgrades React and ReactDOM globally to the desired version |
+| `set -e` | Immediately stops script execution if any command fails |
+| `REACT_VERSION=${1:-latest}` | Sets target React version from argument or defaults to latest |
+| `sudo apt update -y` | Updates local package repository index |
+| `sudo apt install -y curl` | Ensures curl utility is installed for repository retrieval |
+| `if ! command -v node ...` | Checks if Node.js/npm exist, installing NodeSource v20 LTS if missing |
+| `sudo npm install -g react@...` | Installs or upgrades React and ReactDOM globally to the target version |
 | `node -v` & `npm -v` | Checks and displays installed Node.js and npm versions |
 | `npm list -g react react-dom` | Verifies and displays the installed React and ReactDOM versions |
 
@@ -129,13 +152,7 @@ Or install/upgrade to a specific React version:
 
 ---
 
-## 7. Conclusion
-
-Installing React JS via this automated Bash script ensures a consistent, fast, and repeatable setup across Ubuntu environments. It streamlines Node.js runtime configuration, supports seamless version upgrades, and minimizes manual deployment errors.
-
----
-
-## 8. Contact Information
+## 7. Contact Information
 
 | Name     | Email                                                                                |
 | -------- | ------------------------------------------------------------------------------------ |
@@ -143,7 +160,7 @@ Installing React JS via this automated Bash script ensures a consistent, fast, a
 
 ---
 
-## 9. References
+## 8. References
 
 | Topic | Link |
 | ----- | ---- |

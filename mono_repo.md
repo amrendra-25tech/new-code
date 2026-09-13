@@ -28,14 +28,13 @@
 # 1. Purpose
 
 The purpose of this document is to provide a clear and simple guide to understanding Monorepo architecture.
-It helps developers and teams understand how to store, share, and manage multiple projects in a single codebase efficiently.
+It helps developers and teams understand how to store, share, and manage multiple projects in a single repo efficiently.
 
 ---
 
 # 2. What is Monorepo
 
-A Monorepo is a single Git repository where code for multiple projects, applications, and shared libraries is stored together.
-Instead of creating a separate repository for every project, teams use one common codebase while still keeping projects modular and independent.
+A Monorepo (Monolithic Repository) is a software development approach where multiple applications, services, libraries, and packages are maintained within a single version control repository. All projects have a common Git history and can share tooling, configuration, dependencies, and internal libraries.
 
 ---
 
@@ -43,8 +42,8 @@ Instead of creating a separate repository for every project, teams use one commo
 
 | Challenge in Multi-Repo | Why Monorepo Solves It |
 | :---------------------- | :--------------------- |
-| **Dependency Drift** | Keeps shared packages and libraries synchronized across all projects using a single lockfile. |
-| **Complex Cross-Repo PRs** | Allows updating shared libraries and consuming applications together in a single atomic commit. |
+| **Dependency Drift** | Centralized dependency management can improve consistency across projects. |
+| **Complex Cross-Repo PRs** |Related changes can be made and reviewed in a single pull request. |
 | **Code Duplication** | Enables instant code sharing without having to publish packages to external registries. |
 | **Tooling Fragmentation** | Provides a single unified setup for linting, testing, formatting, and CI/CD pipelines. |
 | **Difficult Onboarding** | Developers clone one repository and run a single command to set up the entire ecosystem. |
@@ -58,8 +57,8 @@ Instead of creating a separate repository for every project, teams use one commo
 | **Workspace Management** | Links local packages and dependencies directly without publishing to a remote registry. |
 | **Computation Caching** | Caches previous build, test, and lint results to avoid rebuilding unchanged code. |
 | **Affected Project Detection** | Analyzes Git commits to execute tasks only on modified code and dependent packages. |
-| **Task Orchestration** | Runs tasks in parallel in the correct dependency order with maximum CPU utilization. |
-| **Unified Lockfile** | Manages all third-party dependencies centrally to ensure consistent versions. |
+| **Task Orchestration** | Determines task dependencies and runs independent tasks in parallel while respecting dependency order. |
+| **Unified Dependency Management** | A shared workspace configuration and lockfile can provide consistent and reproducible dependency resolution. |
 | **Code Ownership** | Enforces directory-level approvals before changes can be merged using `CODEOWNERS`. |
 
 ---
@@ -68,11 +67,11 @@ Instead of creating a separate repository for every project, teams use one commo
 
 | Category | Advantages | Disadvantages |
 | :------- | :--------- | :------------ |
-| **Code Sharing** | Easy reuse of shared components and utilities across all apps. | Requires clear boundaries to prevent unintended coupling. |
-| **Refactoring** | Atomic updates across multiple projects in a single pull request. | Breaking changes can impact multiple apps if not tested well. |
+| **Code Sharing** | Easy reuse of shared components and utilities across all apps. | Poor boundaries can create unwanted coupling. |
+| **Refactoring** | Atomic updates across multiple projects in a single pull request. |A breaking change can affect multiple projects. |
 | **Build & CI** | Fast execution through local and remote build caching. | Requires monorepo build tools like Turborepo or Nx. |
-| **Dependencies** | Consistent versions across the entire codebase. | Coordinated upgrades needed for major third-party library updates. |
-| **Repository Size** | Single source of truth and uniform developer onboarding. | Larger repository size requires Git optimizations like sparse-checkout. |
+| **Dependencies** | Centralized dependency management can improve consistency. | Large upgrades may affect many projects.. |
+| **Repository Size** | Single source of truth and uniform developer onboarding. | Repository size can grow significantly over time. |
 
 ---
 
@@ -113,8 +112,8 @@ flowchart TD
 | :------------ | :---------- |
 | **Trunk-Based Development** | Keep feature branches short-lived (< 1–2 days) and merge frequently into `main`. |
 | **Enable Remote Caching** | Share build and test caches across developers and CI to eliminate duplicate runs. |
-| **Enforce Code Ownership** | Use `.github/CODEOWNERS` to ensure domain leads review relevant directories. |
-| **Define Module Boundaries** | Use lint rules to prevent circular dependencies and forbid apps from importing other apps. |
+| **Enforce Code Ownership** | Use .github/CODEOWNERS to define ownership of applications, services, and shared packages and ensure changes are reviewed by the appropriate teams.|
+| **Define Module Boundaries** |Establish clear dependency rules between applications and packages to prevent circular dependencies, unwanted coupling, and unauthorized cross-project imports. |
 | **Run Affected-Only Tasks** | Configure CI to only test, lint, and build projects impacted by the current change. |
 | **Standardize Dependencies** | Maintain single versions for external dependencies across all packages in the repository. |
 

@@ -1,15 +1,16 @@
+
 # React JS Installation via Bash Script
 
 <p align="center">
-<img width="200" height="150" alt="Go-Logo_Aqua" src="https://github.com/user-attachments/assets/950bb6ed-9301-4c7b-b2d3-0abc7082a718" />
+<img width="200" height="150" alt="reactjs" src="https://github.com/user-attachments/assets/7b6b7423-113e-4903-a9cc-c084b26e14f5" />
 </p>
 
 
 ## Document Information
 
 | **Author** | **Created on** | **Version** | **Last Edited On** | **L0 Reviewer** | **L1 Reviewer** | **L2 Reviewer** |
-| ---------- | -------------- | ----------- | ------------------ | --------------- | --------------- | --------------- |
-| Amrendra   | 03-09-2026     | 1.1        | 11-09-2026         | Shubham Rathi   | Shreya J/Nikita | Piyush Upadhyay |
+| ---------------- | -------------------- | ----------------- | ------------------------ | --------------------- | --------------------- | --------------------- |
+| Amrendra         | 03-09-2026           | 1.1              | 07-09-2026               | Shubham Rathi         | Shreya J/Nikita       | Piyush Upadhyay       |
 
 ---
 
@@ -34,11 +35,11 @@ This document explains how to install and upgrade React JS on Ubuntu using a Bas
 
 ## 2. Pre-requisites
 
-| **Pre-requisite** | **Requirement / Description** |
-| ---------------- | ----------------------------- |
-| **Operating System** | Ubuntu 20.04 / 22.04 / 24.04 (Linux) |
-| **User Privileges** | `sudo` / root administrative access |
-| **Network Access** | Outbound internet connectivity (to download packages) |
+| **Pre-requisite**    | **Requirement / Description**                   |
+| -------------------------- | ----------------------------------------------------- |
+| **Operating System** | Ubuntu 20.04 / 22.04 / 24.04 (Linux)                  |
+| **User Privileges**  | `sudo` / root administrative access                 |
+| **Network Access**   | Outbound internet connectivity (to download packages) |
 
 ---
 
@@ -55,48 +56,40 @@ Add the following content:
 ```bash
 #!/bin/bash
 
-# Exit immediately if a command fails
-set -e
-
-# Define React version
-# Default: latest
-# Example: ./install-react.sh 18.2.0
+# React version
 REACT_VERSION=${1:-latest}
 
-echo "======================================"
-echo "Installing React JS ${REACT_VERSION}"
-echo "======================================"
-
-# Update system packages
-echo "[1/5] Updating system packages..."
+# Update system and install curl
 sudo apt update -y
-
-# Install curl
-echo "[2/5] Ensuring curl is installed..."
 sudo apt install -y curl
 
-# Install Node.js LTS and npm if not already present
-echo "[3/5] Setting up Node.js LTS and npm..."
-if ! command -v node &> /dev/null || ! command -v npm &> /dev/null; then
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-    sudo apt install -y nodejs
+# Install Node.js and npm
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Get currently installed React version
+CURRENT_VERSION=$(npm list -g --depth=0 react 2>/dev/null | grep -oP 'react@\K[0-9.]+')
+
+# Check React version
+if [ "$CURRENT_VERSION" = "$REACT_VERSION" ]; then
+    echo "React $REACT_VERSION is already installed."
+    echo "Nothing to do."
 else
-    echo "Node.js ($(node -v)) and npm ($(npm -v)) are already installed."
+    # Remove old React
+    if [ -n "$CURRENT_VERSION" ]; then
+        echo "Removing React $CURRENT_VERSION..."
+        sudo npm uninstall -g react react-dom
+    fi
+
+    # Install requested version
+    echo "Installing React $REACT_VERSION..."
+    sudo npm install -g "react@$REACT_VERSION" "react-dom@$REACT_VERSION"
 fi
 
-# Install or upgrade React and ReactDOM globally
-echo "[4/5] Installing/Upgrading React and ReactDOM (${REACT_VERSION})..."
-sudo npm install -g react@${REACT_VERSION} react-dom@${REACT_VERSION}
-
-# Verify installation
-echo "[5/5] Verifying installation..."
-node -v
-npm -v
-npm list -g react react-dom
-
-echo "======================================"
-echo "React JS ${REACT_VERSION} installed successfully!"
-echo "======================================"
+# Verify
+echo ""
+echo "Installed React:"
+npm list -g --depth=0 react react-dom
 ```
 
 Make the script executable:
@@ -121,37 +114,38 @@ Or install/upgrade to a specific React version:
 
 ## 4. Script Explanation
 
-| **Command / Step** | **Description** |
-| ------------------ | --------------- |
-| `set -e` | Immediately stops script execution if any command fails |
-| `REACT_VERSION=${1:-latest}` | Sets target React version from argument or defaults to latest |
-| `sudo apt update -y` | Updates local package repository index |
-| `sudo apt install -y curl` | Ensures curl utility is installed for repository retrieval |
-| `if ! command -v node ...` | Checks if Node.js/npm exist, installing NodeSource v20 LTS if missing |
-| `sudo npm install -g react@...` | Installs or upgrades React and ReactDOM globally to the target version |
-| `node -v` & `npm -v` | Checks and displays installed Node.js and npm versions |
-| `npm list -g react react-dom` | Verifies and displays the installed React and ReactDOM versions |
+| **Command / Step**                                          | **Description**                                                           |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `REACT_VERSION=${1:-latest}`                                    | Sets target React version dynamically from argument or defaults to`latest`    |
+| `sudo apt update -y && sudo apt install -y curl`                | Updates system package repository and ensures curl is available                 |
+| `curl -fsSL ... \| sudo -E bash - && sudo apt install -y nodejs` | Configures NodeSource repository and installs Node.js LTS with npm              |
+| `CURRENT_VERSION=$(npm list ...)`                               | Queries npm to detect currently installed global React version                  |
+| `if [ "$CURRENT_VERSION" = "$REACT_VERSION" ]`                  | Compares installed version with target version to avoid redundant installations |
+| `sudo npm uninstall -g react react-dom`                         | Removes previous React and ReactDOM packages cleanly before upgrading           |
+| `sudo npm install -g "react@..." "react-dom@..."`               | Installs or upgrades React and ReactDOM globally to the target version          |
+| `npm list -g --depth=0 react react-dom`                         | Displays installed top-level global React and ReactDOM versions                 |
 
 ---
 
 ## 5. Verification
 
-| **Verification Step** | **Command** | **Expected Result** |
-| --------------------- | ----------- | ------------------- |
-| **Check Node.js Version** | `node -v` | Node.js version is displayed (e.g., `v20.x.x`) |
-| **Check npm Version** | `npm -v` | npm version is displayed (e.g., `10.x.x`) |
-| **Check React Version** | `npm list -g react react-dom` | Installed React and ReactDOM versions are displayed |
+| **Verification Step**     | **Command**                         | **Expected Result**                           |
+| ------------------------------- | ----------------------------------------- | --------------------------------------------------- |
+| **Check React Version**   | `npm list -g --depth=0 react react-dom` | Installed React and ReactDOM versions are displayed |
+| **Check Node.js Version** | `node -v`                               | Node.js version is displayed (e.g.,`v20.x.x`)     |
+| **Check npm Version**     | `npm -v`                                | npm version is displayed (e.g.,`10.x.x`)          |
 
 ---
 
 ## 6. Best Practices
 
-| **Best Practice** | **Recommendation / Description** |
-| ----------------- | -------------------------------- |
-| **Node.js LTS** | Always deploy official Node.js Long Term Support (LTS) versions |
-| **Version Pinning** | Explicitly specify React versions (e.g., `18.2.0`) in production environments |
-| **Routine Updates** | Regularly update Node.js, npm, and dependencies for security patches |
-| **Version Control** | Maintain the installation script in a centralized Git repository |
+| **Best Practice**   | **Recommendation / Description**                                                |
+| ------------------------- | ------------------------------------------------------------------------------------- |
+| **Node.js LTS**     | Always deploy official Node.js Long Term Support (LTS) versions                       |
+| **Idempotency**     | Detect existing versions prior to installation to avoid unnecessary package downloads |
+| **Clean Uninstall** | Remove older package versions before installing new ones to prevent package conflicts |
+| **Version Pinning** | Explicitly specify React versions (e.g.,`18.2.0`) in production environments        |
+| **Version Control** | Maintain the installation script in a centralized Git repository                      |
 
 ---
 
@@ -165,8 +159,8 @@ Or install/upgrade to a specific React version:
 
 ## 8. References
 
-| Topic | Link |
-| ----- | ---- |
-| React Official Docs | [https://react.dev/](https://react.dev/) |
+| Topic                    | Link                                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| React Official Docs      | [https://react.dev/](https://react.dev/)                                                   |
 | NodeSource Distributions | [https://github.com/nodesource/distributions](https://github.com/nodesource/distributions) |
-| npm Documentation | [https://docs.npmjs.com/](https://docs.npmjs.com/) |
+| npm Documentation        | [https://docs.npmjs.com/](https://docs.npmjs.com/)                                         |

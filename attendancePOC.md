@@ -1,6 +1,5 @@
-<div align="center">
 
----
+# Attendance API Setup and Execution POC 
 
 # Document Information
 
@@ -70,13 +69,9 @@ python3.11 --version && poetry --version && java -version && psql --version && r
 
 Expected output:
 
-```text
-Python 3.11.x
-Poetry (version 1.8.x)
-openjdk version "17.0.x"
-psql (PostgreSQL) 14.x
-redis-cli 6.x
-```
+<img width="1471" height="215" alt="image" src="https://github.com/user-attachments/assets/35658099-997b-4657-9085-6ae7c287afa0" />
+
+
 
 ---
 
@@ -96,8 +91,8 @@ git clone https://github.com/OT-MICROSERVICES/attendance-api.git
 cd /home/ubuntu/attendance-api
 ```
 
-<img width="<WIDTH>" height="<HEIGHT>" alt="image"
-src="<IMAGE_URL>" />
+<img width="1575" height="122" alt="image" src="https://github.com/user-attachments/assets/2c51425e-17e8-4294-bd46-822e4a6426aa" />
+
 
 ---
 
@@ -135,8 +130,7 @@ poetry run python --version
 poetry run python -c "from app import app; print(app)"
 ```
 
-<img width="<WIDTH>" height="<HEIGHT>" alt="image"
-src="<IMAGE_URL>" />
+<img width="889" height="134" alt="image" src="https://github.com/user-attachments/assets/3a118016-d2f8-4b21-9d73-307e24b40eb1" />
 
 ---
 
@@ -206,9 +200,8 @@ sudo ln -sf /opt/liquibase/liquibase /usr/local/bin/liquibase
 # Verify installation
 liquibase --version
 ```
+<img width="1134" height="738" alt="image" src="https://github.com/user-attachments/assets/0d9066e3-77ad-4d61-a472-c3c0eb2e4ed7" />
 
-<img width="<WIDTH>" height="<HEIGHT>" alt="image"
-src="<IMAGE_URL>" />
 
 ---
 
@@ -244,6 +237,7 @@ Check created tables:
 ```bash
 psql -h localhost -U attendance_user -d attendance_db -c '\dt'
 ```
+<img width="1097" height="268" alt="image" src="https://github.com/user-attachments/assets/88f2a4fe-6349-4cf8-a305-af4f496f4432" />
 
 ---
 
@@ -265,8 +259,8 @@ curl http://localhost:8080/api/v1/attendance/health
 Expected response: `{"message": "Application is healthy"}`.
 Press `Ctrl+C` in the first terminal to stop the test.
 
-<img width="<WIDTH>" height="<HEIGHT>" alt="image"
-src="<IMAGE_URL>" />
+<img width="1446" height="277" alt="health" src="https://github.com/user-attachments/assets/445a3e7e-7257-4c43-868d-c9f3fc381b9e" />
+
 
 ---
 
@@ -323,10 +317,8 @@ sudo ss -lntp | grep 8080
 
 Expected output:
 
-```text
-Active: active (running)
-LISTEN 0 2048 0.0.0.0:8080
-```
+<img width="1818" height="715" alt="image" src="https://github.com/user-attachments/assets/c8a5b70b-9b5a-4abe-9616-c6ddb7643350" />
+
 
 ---
 
@@ -340,18 +332,14 @@ curl -i http://localhost:8080/api/v1/attendance/health
 
 Expected output:
 
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{"message": "Application is healthy"}
-```
+<img width="1017" height="228" alt="image" src="https://github.com/user-attachments/assets/43db2883-3f7e-4946-b950-99b3972ef8cf" />
 
 Open the Swagger documentation in your browser:
 
 ```text
 http://<YOUR-EC2-PUBLIC-IP>:8080/apidocs/
 ```
+<img width="1892" height="971" alt="swaggerui" src="https://github.com/user-attachments/assets/cf02d6f8-2c9f-4cb7-ae5d-86274cf04728" />
 
 ---
 
@@ -362,18 +350,20 @@ Check stored records in PostgreSQL:
 ```bash
 psql -h localhost -U attendance_user -d attendance_db -c "SELECT * FROM records;"
 ```
+<img width="1548" height="175" alt="image" src="https://github.com/user-attachments/assets/afbea928-5428-41d8-a501-36ea08909d67" />
 
 Watch Redis caching in real time:
 
 ```bash
 # Run monitor in terminal
 redis-cli MONITOR
-# Send a search request from Swagger or curl
-# Terminal displays SETEX command showing key was cached for 20 seconds
 ```
+ Send a search request from Swagger or curl
+ Terminal displays SETEX command showing key was cached for 20 seconds
+```
+<img width="1702" height="348" alt="Redis-cache" src="https://github.com/user-attachments/assets/2bfebcd4-3fb5-40ab-9fd9-66570537e6cb" />
 
 ---
-
 ## 6.4 Validation Checklist
 
 | **Check**    | **Expected Result**                                 |

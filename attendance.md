@@ -71,14 +71,8 @@ python3.11 --version && poetry --version && java -version && psql --version && r
 ```
 
 Expected:
+<img width="1471" height="215" alt="image" src="https://github.com/user-attachments/assets/35658099-997b-4657-9085-6ae7c287afa0" />
 
-```text
-Python 3.11.9
-Poetry (version 1.8.3)
-openjdk version "17.0.11" 2024-04-16
-psql (PostgreSQL) 14.12 (Ubuntu 14.12-0ubuntu0.22.04.1)
-redis-cli 6.0.16
-```
 
 ---
 
@@ -91,9 +85,8 @@ cd ~
 git clone https://github.com/OT-MICROSERVICES/attendance-api.git
 cd ~/attendance-api
 ```
+<img width="1575" height="122" alt="image" src="https://github.com/user-attachments/assets/2c51425e-17e8-4294-bd46-822e4a6426aa" />
 
-<img width="<WIDTH>" height="<HEIGHT>" alt="image"
-src="<IMAGE_URL>" />
 
 ---
 
@@ -102,18 +95,21 @@ src="<IMAGE_URL>" />
 ```bash
 # Update repository index and install base build tools, OpenJDK 17, and Python 3.11
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y curl wget git nano net-tools build-essential software-properties-common openjdk-17-jdk
+sudo apt install -y git curl build-essential libpq-dev postgresql postgresql-contrib redis-server openjdk-17-jdk libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libffi-dev
 sudo add-apt-repository -y ppa:deadsnakes/ppa
 sudo apt update
-sudo apt install -y python3.11 python3.11-venv python3.11-dev gcc libpq-dev postgresql postgresql-contrib redis-server
+sudo apt install -y python3.11 python3.11-venv 
 
 # Install Poetry
 curl -sSL https://install.python-poetry.org | python3.11 -
 export PATH="$HOME/.local/bin:$PATH"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-```
 
-### Additional Dependencies
+poetry --version
+```
+<img width="606" height="126" alt="image" src="https://github.com/user-attachments/assets/ddd5ea85-b182-478b-a3e0-045a8e5678de" />
+
+## Additional Dependencies
 
 ```bash
 # Initialize Poetry environment with Python 3.11 and add Gunicorn
@@ -122,9 +118,7 @@ poetry env use python3.11
 poetry add gunicorn
 poetry install
 ```
-
-<img width="<WIDTH>" height="<HEIGHT>" alt="image"
-src="<IMAGE_URL>" />
+<img width="1256" height="371" alt="image" src="https://github.com/user-attachments/assets/348e4b6a-3cfd-45cb-93d2-34cad4f0e884" />
 
 ---
 
@@ -134,8 +128,8 @@ Create or update the required configuration:
 
 ```bash
 # Initialize PostgreSQL user credentials and database
-sudo systemctl enable --now postgresql redis-server
-sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'password';"
+sudo systemctl enable --now postgresql 
+sudo -u postgres psql 
 sudo -u postgres createdb attendance_db
 
 # Create application config.yaml

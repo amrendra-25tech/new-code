@@ -357,9 +357,9 @@ Watch Redis caching in real time:
 ```bash
 # Run monitor in terminal
 redis-cli MONITOR
-```
- Send a search request from Swagger or curl
- Terminal displays SETEX command showing key was cached for 20 seconds
+
+# Send a search request from Swagger or curl
+# Terminal displays SETEX command showing key was cached for 20 seconds
 ```
 <img width="1702" height="348" alt="Redis-cache" src="https://github.com/user-attachments/assets/2bfebcd4-3fb5-40ab-9fd9-66570537e6cb" />
 
@@ -406,10 +406,12 @@ redis-cli MONITOR
 
 ## 7.3 Key Findings
 
-- **Clean Setup**: Poetry keeps all Python dependencies in their own environment.
-- **Easy Migrations**: Liquibase runs database changes automatically without writing manual SQL.
-- **Fast Responses**: Redis stores search results for 20 seconds to make queries faster.
-- **Auto-Recovery**: If the app stops, systemd restarts it automatically within 5 seconds.
+| **Key Finding** | **Observation** |
+| --------------- | --------------- |
+| **Clean Setup** | Poetry keeps all Python dependencies in their own isolated environment. |
+| **Easy Migrations** | Liquibase runs database schema updates automatically without writing manual SQL. |
+| **Fast Responses** | Redis caches search results for 20 seconds to serve queries in under 2ms. |
+| **Auto-Recovery** | Systemd automatically restarts the application within 5 seconds if it fails. |
 
 ---
 
@@ -439,14 +441,16 @@ redis-cli MONITOR
 | Port 8080 not reachable from browser | Security Group blocked           | Allow TCP port 8080 in AWS EC2 Security Group.                                                                 |
 
 ---
-
 # 10. Best Practices
 
-- **Do Not Replace System Python**: Always install Python 3.11 side-by-side using a PPA.
-- **Use Dedicated Database Users**: Use `attendance_user` instead of the root `postgres` account.
-- **Use Systemd**: Always run web applications as a systemd service for automatic restarts.
-- **Use Versioned Migrations**: Let Liquibase manage schema changes instead of running manual SQL commands.
-- **Check Security Groups First**: If the browser cannot open Swagger, make sure port 8080 is open in AWS.
+| **Best Practice** | **Description** |
+| ----------------- | --------------- |
+| **Keep System Python Clean** | Always install Python 3.11 side-by-side using deadsnakes PPA without modifying Ubuntu's system Python. |
+| **Use Dedicated Database User** | Use `attendance_user` instead of the default `postgres` superuser for better security. |
+| **Manage Services with Systemd** | Run web applications as a systemd service with `Restart=always` for automatic recovery. |
+| **Automate Database Migrations** | Use Liquibase changelogs to track and apply database changes automatically instead of manual SQL. |
+| **Verify AWS Security Groups** | Ensure inbound TCP port 8080 is allowed in EC2 Security Groups before opening browser endpoints. |
+
 
 ---
 

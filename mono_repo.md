@@ -1,12 +1,12 @@
-# Mono repo Features Documentation
+# Monorepo Documentation
 
 ---
 
 ## Document Information
 
-| Author   | Created On | Version | L0 Reviewer   | L1 Reviewer       | L2 Reviewer        |
-| :------- | :--------- | :------ | :------------ | :---------------- | :----------------- |
-| Amrendra | 11-09-2026 | 1.0     | Shubham Rathi | Shreya J / Nikita | Piyush Upadhyay    |
+| Author   | Created On | Version | L0 Reviewer   | L1 Reviewer       | L2 Reviewer     |
+| :------- | :--------- | :------ | :------------ | :---------------- | :-------------- |
+| Amrendra | 11-09-2026 | 1.1     | Shubham Rathi | Shreya J / Nikita | Piyush Upadhyay |
 
 ---
 
@@ -28,50 +28,50 @@
 # 1. Purpose
 
 The purpose of this document is to provide a clear and simple guide to understanding Monorepo architecture.
-It helps developers and teams understand how to store, share, and manage multiple projects in a single repo efficiently.
+It helps developers and teams understand how to store, share, and manage multiple projects in a single codebase efficiently.
 
 ---
 
 # 2. What is Monorepo
 
-A Monorepo (Monolithic Repository) is a software development approach where multiple applications, services, libraries, and packages are maintained within a single version control repository. All projects have a common Git history and can share tooling, configuration, dependencies, and internal libraries.
+A Monorepo is a single Git repository where code for multiple projects, applications, and shared libraries is stored together.
+Instead of creating a separate repository for every project, teams use one common codebase while still keeping projects modular and independent.
 
 ---
 
 # 3. Why Monorepo
 
-| Challenge in Multi-Repo | Why Monorepo Solves It |
-| :---------------------- | :--------------------- |
-| **Dependency Drift** | Centralized dependency management can improve consistency across projects. |
-| **Complex Cross-Repo PRs** |Related changes can be made and reviewed in a single pull request. |
-| **Code Duplication** | Enables instant code sharing without having to publish packages to external registries. |
-| **Tooling Fragmentation** | Provides a single unified setup for linting, testing, formatting, and CI/CD pipelines. |
-| **Difficult Onboarding** | Developers clone one repository and run a single command to set up the entire ecosystem. |
+| Challenge in Multi-Repo          | Why Monorepo Solves It                                                                          |
+| :------------------------------- | :---------------------------------------------------------------------------------------------- |
+| **Dependency Drift**       | Keeps shared packages and libraries synchronized across all projects using a single lockfile.   |
+| **Complex Cross-Repo PRs** | Allows updating shared libraries and consuming applications together in a single atomic commit. |
+| **Code Duplication**       | Enables instant code sharing without having to publish packages to external registries.         |
+| **Tooling Fragmentation**  | Provides a single unified setup for linting, testing, formatting, and CI/CD pipelines.          |
+| **Difficult Onboarding**   | Developers clone one repository and run a single command to set up the entire ecosystem.        |
 
 ---
 
 # 4. Monorepo Features
 
-| Feature | Description |
-| :------ | :---------- |
-| **Workspace Management** | Links local packages and dependencies directly without publishing to a remote registry. |
-| **Computation Caching** | Caches previous build, test, and lint results to avoid rebuilding unchanged code. |
-| **Affected Project Detection** | Analyzes Git commits to execute tasks only on modified code and dependent packages. |
-| **Task Orchestration** | Determines task dependencies and runs independent tasks in parallel while respecting dependency order. |
-| **Unified Dependency Management** | A shared workspace configuration and lockfile can provide consistent and reproducible dependency resolution. |
-| **Code Ownership** | Enforces directory-level approvals before changes can be merged using `CODEOWNERS`. |
+| Feature                       | Description                                                           |
+| :---------------------------- | :-------------------------------------------------------------------- |
+| **Single Repository**   | All projects, apps, and shared libraries live in one Git repo.        |
+| **Direct Code Sharing** | Projects can use shared code directly without publishing packages.    |
+| **Atomic Commits**      | Update multiple projects or packages together in a single commit.     |
+| **Unified Lockfile**    | One lockfile keeps library versions the same across all projects.     |
+| **Code Ownership**      | Assign team review approvals to specific folders using`CODEOWNERS`. |
 
 ---
 
 # 5. Advantages and Disadvantages
 
-| Category | Advantages | Disadvantages |
-| :------- | :--------- | :------------ |
-| **Code Sharing** | Easy reuse of shared components and utilities across all apps. | Poor boundaries can create unwanted coupling. |
-| **Refactoring** | Atomic updates across multiple projects in a single pull request. |A breaking change can affect multiple projects. |
-| **Build & CI** | Fast execution through local and remote build caching. | Requires monorepo build tools like Turborepo or Nx. |
-| **Dependencies** | Centralized dependency management can improve consistency. | Large upgrades may affect many projects.. |
-| **Repository Size** | Single source of truth and uniform developer onboarding. | Repository size can grow significantly over time. |
+| Category               | Advantages                                                  | Disadvantages                                           |
+| :--------------------- | :---------------------------------------------------------- | :------------------------------------------------------ |
+| **Code Sharing** | Easy to reuse code across apps without publishing packages. | Need clear rules to avoid tightly coupled code.         |
+| **Refactoring**  | Update shared code and apps in a single pull request.       | Breaking changes can impact multiple apps.              |
+| **Dependencies** | Consistent library versions across the whole codebase.      | Large library updates require team coordination.        |
+| **Speed**        | Shared build caching speeds up local and CI checks.         | Large repository size needs Git optimizations.          |
+| **Visibility**   | Complete visibility across all projects and libraries.      | Requires strong code review policies to manage changes. |
 
 ---
 
@@ -81,41 +81,40 @@ A Monorepo (Monolithic Repository) is a software development approach where mult
 
 ```mermaid
 flowchart TD
-    A[Create Feature Branch] --> B[Modify Code in App / Package]
-    B --> C[Run Affected Tests & Builds]
-    C --> D{Cache Status}
-    D -->|Cache Hit| E[Instant Pass via Cache]
-    D -->|Cache Miss| F[Execute Tasks in Parallel]
-    E & F --> G[Open Pull Request]
-    G --> H[CI Runs Affected Pipeline]
-    H --> I[CODEOWNERS Approval]
-    I --> J[Merge to Main Trunk]
-    J --> K[Deploy Affected Applications Only]
+    A[Repository] --> B[Branch]
+    B --> C[Development]
+    C --> D[Commit]
+    D --> E[Pull Request]
+    E --> F[Review + CI Checks]
+    F --> G[Approval]
+    G --> H[Merge]
+    H --> I[Release / Tag]
 ```
 
 ### Workflow Steps
 
-| Step | Action | Description |
-| :--- | :----- | :---------- |
-| **1** | **Branch** | Create a short-lived feature branch from `main`. |
-| **2** | **Develop** | Make changes to the desired application or shared package. |
-| **3** | **Local Test** | Run affected commands (`nx affected` or `turbo run`) to test only modified code. |
-| **4** | **Pull Request** | Open a PR; CI validates only affected projects using remote caching. |
-| **5** | **Review & Merge** | Team leads approve changes based on `CODEOWNERS`, then code merges to `main`. |
-| **6** | **Deploy** | Continuous Deployment triggers only for the affected applications. |
+| Step        | Phase                        | Description                                         |
+| :---------- | :--------------------------- | :-------------------------------------------------- |
+| **1** | **Repository**         | Open or pull the single shared repository.          |
+| **2** | **Branch**             | Create a local working branch for the task.         |
+| **3** | **Development**        | Update apps or shared libraries in their folders.   |
+| **4** | **Commit**             | Save atomic commits across changed projects.        |
+| **5** | **Pull Request**       | Push the branch and open a PR for review.           |
+| **6** | **Review + CI Checks** | Peers review code while CI tests affected projects. |
+| **7** | **Approval**           | Folder owners approve the PR using`CODEOWNERS`.   |
+| **8** | **Merge**              | Merge approved code into the`main` branch.        |
+| **9** | **Release / Tag**      | Tag releases for updated projects or packages.      |
 
 ---
 
 # 7. Best Practices for Monorepo Management
 
-| Best Practice | Description |
-| :------------ | :---------- |
-| **Trunk-Based Development** | Keep feature branches short-lived (< 1–2 days) and merge frequently into `main`. |
-| **Enable Remote Caching** | Share build and test caches across developers and CI to eliminate duplicate runs. |
-| **Enforce Code Ownership** | Use .github/CODEOWNERS to define ownership of applications, services, and shared packages and ensure changes are reviewed by the appropriate teams.|
-| **Define Module Boundaries** |Establish clear dependency rules between applications and packages to prevent circular dependencies, unwanted coupling, and unauthorized cross-project imports. |
-| **Run Affected-Only Tasks** | Configure CI to only test, lint, and build projects impacted by the current change. |
-| **Standardize Dependencies** | Maintain single versions for external dependencies across all packages in the repository. |
+| Best Practice                      | Description                                                    |
+| :--------------------------------- | :------------------------------------------------------------- |
+| **Trunk-Based Development**  | Keep feature branches short and merge frequently into`main`. |
+| **Use CODEOWNERS**           | Assign clear team ownership for specific project folders.      |
+| **Test Affected Only**       | Run tests and checks only on projects changed in the PR.       |
+| **Standardize Dependencies** | Use the same version for shared libraries across all projects. |
 
 ---
 
@@ -128,18 +127,18 @@ When combined with build caching and affected-only workflows, it significantly b
 
 # 9. Contact Information
 
-| Name | Email |
-| :--- | :---- |
+| Name     | Email                                 |
+| :------- | :------------------------------------ |
 | Amrendra | amrendra.yadav.snaatak@mygurukulam.co |
 
 ---
 
 # 10. References
 
-| Resource | Link |
-| :------- | :--- |
-| Monorepo Tools Guide | https://monorepo.tools/ |
+| Resource                | Link                          |
+| :---------------------- | :---------------------------- |
+| Monorepo Tools Guide    | https://monorepo.tools/       |
 | Turborepo Documentation | https://turbo.build/repo/docs |
-| Nx Documentation | https://nx.dev/ |
+| Nx Documentation        | https://nx.dev/               |
 
 ---

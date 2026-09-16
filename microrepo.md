@@ -1,12 +1,12 @@
-# Micro repo Features Documentation
+# Microrepo Documentation
 
 ---
 
 ## Document Information
 
-| Author   | Created On | Version | L0 Reviewer   | L1 Reviewer       | L2 Reviewer        |
-| :------- | :--------- | :------ | :------------ | :---------------- | :----------------- |
-| Amrendra | 11-09-2026 | 1.0     | Shubham Rathi | Shreya J / Nikita | Piyush Upadhyay    |
+| Author   | Created On | Version | L0 Reviewer   | L1 Reviewer       | L2 Reviewer     |
+| :------- | :--------- | :------ | :------------ | :---------------- | :-------------- |
+| Amrendra | 11-09-2026 | 1.1   | Shubham Rathi | Shreya J / Nikita | Piyush Upadhyay |
 
 ---
 
@@ -28,51 +28,49 @@
 # 1. Purpose
 
 The purpose of this document is to explain Microrepo architecture in simple terms.
-It guides teams on how to manage separate repositories and deploy services independently.
+It guides teams on how to manage and organize separate repositories independently.
 
 ---
 
 # 2. What is Microrepo
 
 A Microrepo is an approach where each project or service has its own separate Git repository.
-Each repository has its own code, commit history, and deployment pipeline, keeping teams independent.
+Each repository has its own code, commit history, and release tags, keeping teams independent.
 
 ---
 
 # 3. Why Microrepo
 
-| Need / Factor | Why Microrepo Solves It |
-| :------------ | :---------------------- |
-| **Team Independence** | Teams work on their own code without waiting for others. |
-| **Separate Deployments** | Deploy one service without affecting other services. |
-| **Access Control** | Give developers access only to the repositories they need. |
-| **Fast Git Speed** | Small repositories make cloning and pulling code very fast. |
-| **Simple CI/CD** | Pipelines are small, fast, and test only one service. |
+| Need / Factor                | Why Microrepo Solves It                                         |
+| :--------------------------- | :-------------------------------------------------------------- |
+| **Team Independence**  | Teams work on their own code without waiting for others.        |
+| **Separate Releases**  | Release updates for one project without touching other repos.   |
+| **Access Control**     | Give developers access only to the repositories they need.      |
+| **Fast Git Speed**     | Small repositories make cloning and pulling code very fast.     |
+| **Simple Maintenance** | Repositories have simple commit history and are easy to manage. |
 
 ---
 
 # 4. Microrepo Features
 
-| Feature | Description |
-| :------ | :---------- |
-| **Separate Repositories** | Each app or service lives in its own Git repo. |
-| **Independent CI/CD** | Builds and deploys run only for that specific repo. |
-| **Separate Versioning** | Each repo has its own release tags and version numbers. |
-| **Package Registries** | Shared libraries are published to npm, PyPI, or Docker Hub. |
-| **Custom Access Rights** | Set read and write permissions per repository. |
-| **Tech Stack Choice** | Teams can pick the best programming language for their service. |
+| Feature                         | Description                                                     |
+| :------------------------------ | :-------------------------------------------------------------- |
+| **Separate Repositories** | Each app or service lives in its own Git repo.                  |
+| **Independent Branching** | Teams create and manage branches without affecting other repos. |
+| **Separate Versioning**   | Each repo has its own release tags and version numbers.         |
+| **Custom Access Rights**  | Set read and write permissions per repository.                  |
 
 ---
 
 # 5. Advantages and Disadvantages
 
-| Category | Advantages | Disadvantages |
-| :------- | :--------- | :------------ |
-| **Releases** | Fast and independent releases for each service. | Hard to make changes across multiple repositories at once. |
-| **Security** | Easy to restrict access to sensitive repositories. | Difficult to manage security settings across many repos. |
-| **Speed** | Small repos clone and download quickly. | Hard to find and reuse code stored in other repos. |
-| **CI/CD** | Simple pipelines that test only one project. | Must set up and maintain a pipeline for every repo. |
-| **Dependencies** | Update dependencies whenever the team wants. | Libraries can easily get out of sync across repos. |
+| Category               | Advantages                                            | Disadvantages                                               |
+| :--------------------- | :---------------------------------------------------- | :---------------------------------------------------------- |
+| **Releases**     | Teams can tag and release code on their own schedule. | Hard to make changes across multiple repositories at once.  |
+| **Security**     | Easy to restrict access to sensitive repositories.    | Difficult to manage settings across many repos.             |
+| **Speed**        | Small repos clone and download quickly.               | Hard to find and reuse code stored in other repos.          |
+| **Management**   | Simple Git history and clean repository branches.     | Must configure branch rules and permissions for every repo. |
+| **Dependencies** | Update dependencies whenever the team wants.          | Libraries can easily get out of sync across repos.          |
 
 ---
 
@@ -82,62 +80,64 @@ Each repository has its own code, commit history, and deployment pipeline, keepi
 
 ```mermaid
 flowchart TD
-    A[Create Branch in Service Repo] --> B[Write Code & Test Locally]
-    B --> C[Open Pull Request]
-    C --> D[CI Runs Tests & Build]
-    D --> E[Team Reviews & Approves PR]
-    E --> F[Merge to Main Branch]
-    F --> G[Build Container / Package]
-    G --> H[Deploy Service to Production]
+    A[Repository] --> B[Branch]
+    B --> C[Development]
+    C --> D[Commit]
+    D --> E[Pull Request]
+    E --> F[Review + CI Checks]
+    F --> G[Approval]
+    G --> H[Merge]
+    H --> I[Release / Tag]
 ```
 
 ### Workflow Steps
 
-| Step | Action | Description |
-| :--- | :----- | :---------- |
-| **1** | **Branch** | Create a new branch in the service repository. |
-| **2** | **Develop** | Write code and test the service locally. |
-| **3** | **Pull Request** | Open a PR for review. |
-| **4** | **CI Check** | The pipeline runs tests and checks for errors. |
-| **5** | **Review & Merge** | Team reviews and merges code into `main`. |
-| **6** | **Deploy** | Build the package and deploy the service. |
+| Step        | Phase                        | Description                                        |
+| :---------- | :--------------------------- | :------------------------------------------------- |
+| **1** | **Repository**         | Select and clone the specific service repository.  |
+| **2** | **Branch**             | Create a local working branch for the task.        |
+| **3** | **Development**        | Write code and test changes locally.               |
+| **4** | **Commit**             | Save changes with clear commit messages.           |
+| **5** | **Pull Request**       | Push the branch and open a PR for review.          |
+| **6** | **Review + CI Checks** | Peers review code while automated tests verify it. |
+| **7** | **Approval**           | Repository maintainers approve the pull request.   |
+| **8** | **Merge**              | Merge approved code into the`main` branch.       |
+| **9** | **Release / Tag**      | Create a version tag to mark the release.          |
 
 ---
 
 # 7. Best Practices for Microrepo Management
 
-| Best Practice | Description |
-| :------------ | :---------- |
-| **Automate Updates** | Use tools like Dependabot to keep libraries updated automatically. |
-| **Use Repo Templates** | Create standard templates so all new repositories look the same. |
-| **Follow SemVer** | Use clear version numbers (`1.0.0`) for every release. |
-| **Share CI Templates** | Reuse standard CI pipeline configs across all repositories. |
-| **Use Package Registries** | Share common code through private package registries. |
-| **Clear API Contracts** | Define clear API schemas so services do not break each other. |
+| Best Practice                    | Description                                                          |
+| :------------------------------- | :------------------------------------------------------------------- |
+| **Use Standard Templates** | Keep repository structure and README consistent across all projects. |
+| **Protect Main Branch**    | Require code review and approval before merging pull requests.       |
+| **Use Version Tags**       | Tag each release clearly (e.g.,`v1.0.0`) in the repository.        |
+| **Update Dependencies**    | Regularly update project libraries to avoid security issues.         |
 
 ---
 
 # 8. Conclusion
 
-A Microrepo architecture gives teams full independence and allows fast, separate deployments.
-With standard templates and automated updates, teams can easily manage multiple repositories.
+A Microrepo architecture gives teams full independence and allows fast, separate repository management.
+With standard templates and automated updates, teams can easily maintain multiple repositories.
 
 ---
 
 # 9. Contact Information
 
-| Name | Email |
-| :--- | :---- |
+| Name     | Email                                 |
+| :------- | :------------------------------------ |
 | Amrendra | amrendra.yadav.snaatak@mygurukulam.co |
 
 ---
 
 # 10. References
 
-| Resource | Link |
-| :------- | :--- |
+| Resource                            | Link                                                 |
+| :---------------------------------- | :--------------------------------------------------- |
 | Martin Fowler - Microservices Guide | https://martinfowler.com/articles/microservices.html |
-| Git Multi-Repository Patterns | https://git-scm.com/book/en/v2 |
-| Semantic Versioning Specification | https://semver.org/ |
+| Git Multi-Repository Patterns       | https://git-scm.com/book/en/v2                       |
+| Semantic Versioning Specification   | https://semver.org/                                  |
 
 ---

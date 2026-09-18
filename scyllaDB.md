@@ -233,7 +233,6 @@ SELECT * FROM poc_keyspace.audit_log;
 | **Use Private IPs**             | Bind database communications to EC2 Private IPs (`172.31.x.x`) for free, secure, high-speed internal traffic. |
 | **Configure Security Groups**   | Open port`9042` for application clients and restrict port `7000` strictly to internal cluster nodes.        |
 | **Use NetworkTopologyStrategy** | Always use`NetworkTopologyStrategy` to ensure compatibility with modern ScyllaDB tablet replication.          |
-| **Automate Periodic Backups**   | Schedule regular database snapshots using`nodetool snapshot` and archive SSTables to AWS S3.                  |
 
 ---
 

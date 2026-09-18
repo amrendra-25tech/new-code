@@ -22,12 +22,11 @@
 5. [Implementation / Execution](#5-implementation--execution)
 6. [Validation](#6-validation)
 7. [Observations](#7-observations)
-8. [Use Cases](#8-use-cases)
-9. [Troubleshooting](#9-troubleshooting)
-10. [Best Practices](#10-best-practices)
-11. [Conclusion](#11-conclusion)
-12. [Contact Information](#12-contact-information)
-13. [References](#13-references)
+8. [Troubleshooting](#8-troubleshooting)
+9. [Best Practices](#9-best-practices)
+10. [Conclusion](#10-conclusion)
+11. [Contact Information](#11-contact-information)
+12. [References](#12-references)
 
 ---
 
@@ -204,7 +203,7 @@ SELECT * FROM poc_keyspace.audit_log;
 
 # 7. Observations
 
-### 7.1 Component Results
+
 
 | **Component**            | **Status** | **Result**                     |
 | :----------------------------- | :--------------: | :----------------------------------- |
@@ -213,27 +212,11 @@ SELECT * FROM poc_keyspace.audit_log;
 | **Node Ring State**      |       PASS       | `nodetool status` shows `UN`     |
 | **Data CRUD Operations** |       PASS       | Records written and read in`cqlsh` |
 
-### 7.2 Key Findings
 
-| **Key Finding**              | **Description**                                                                                            |
-| :--------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
-| **Zero GC Pauses**           | Built on C++ Seastar engine, eliminating Java garbage collection pauses and tail latency spikes.                 |
-| **100% CQL Compatibility**   | Drop-in replacement for Cassandra schemas, drivers, and queries with zero application code changes.              |
-| **Adaptive Resource Sizing** | Developer mode and CPU shard controls permit running on lightweight cloud instances before production scale-out. |
 
 ---
 
-# 8. Use Cases
-
-| **Use Case**               | **Description**                                                   |
-| :------------------------------- | :---------------------------------------------------------------------- |
-| **User Session Store**     | Storing login tokens and active sessions with instant response times.   |
-| **Application Audit Logs** | Recording high-volume events across microservices.                      |
-| **IoT & Metrics Storage**  | Collecting continuous time-series data with automatic expiration (TTL). |
-
----
-
-# 9. Troubleshooting
+# 8. Troubleshooting
 
 | **Issue**                  | **Cause**                            | **Quick Fix**                                                 |
 | :------------------------------- | :----------------------------------------- | :------------------------------------------------------------------ |
@@ -243,7 +226,7 @@ SELECT * FROM poc_keyspace.audit_log;
 
 ---
 
-# 10. Best Practices
+# 9. Best Practices
 
 | **Best Practice**               | **Description**                                                                                           |
 | :------------------------------------ | :-------------------------------------------------------------------------------------------------------------- |
@@ -254,7 +237,7 @@ SELECT * FROM poc_keyspace.audit_log;
 
 ---
 
-# 11. Conclusion
+# 10. Conclusion
 
 This POC successfully validates that ScyllaDB runs smoothly on AWS EC2. The service is active, the node status is healthy (`UN`), and live data write/read operations were verified via `cqlsh`. 
 The setup is reliable and ready to be scaled into a multi-node High Availability cluster.
@@ -265,7 +248,7 @@ Based on the setup and findings of this POC, the comprehensive detailed document
 
 ---
 
-# 12. Contact Information
+# 11. Contact Information
 
 | Name     | Email                                                                                |
 | :------- | :----------------------------------------------------------------------------------- |
@@ -273,7 +256,7 @@ Based on the setup and findings of this POC, the comprehensive detailed document
 
 ---
 
-# 13. References
+# 12. References
 
 | **Resource**              | **Link**                                                                                                                                                                                            |
 | :------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

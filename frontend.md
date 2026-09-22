@@ -1,424 +1,304 @@
-# Software Documentation: Frontend (OT-Microservices)
+# Frontend Detailed Documentation
 <p align="center">
-<img width="280" height="280" alt="image" src="https://github.com/user-attachments/assets/d9e8568a-1893-4123-931e-4423498a2cff" />
+<img width="280" height="280" alt="image" src="https://github.com/user-attachments/assets/a2b1208b-c1cf-4b22-b1b4-1393da99302b" />
 </p>
 
+---
 ## Document Information
+| Author   | Created on | Version |   L0 Reviewer           | L1 Reviewer       | L2 Reviewer     |
+| -------- | ---------- | ------- | --------------------- | ----------------- | --------------- |
+| Amrendra | 11/09/2026 | 1.0     | Shubham Rathi / Sunny | Shreya J / Nikita | Piyush Upadhyay |
 
-| Author             | Created On | Version | L0 Reviewer           | L1 Reviewer       | L2 Reviewer     |
-| :----------------- | :--------- | :------ | :-------------------- | :---------------- | :-------------- |
-| **Amrendra** | 11-09-2026 | 1.0     | Shubham Rathi / Sunny | Shreya J / Nikita | Piyush Upadhyay |
+---
+
+## Table of Contents
+
+<details>
+<summary>Table of Contents</summary>
+
+- [Introduction](#introduction)
+- [Pre-requisites](#pre-requisites)
+- [System Requirements](#system-requirements)
+
+<details>
+<summary>Dependencies</summary>
+
+- [Build time Dependency](#build-time-dependency)
+- [Run time Dependency](#run-time-dependency)
+- [Other Dependency](#other-dependency)
+
+</details>
+
+- [Important Ports](#important-ports)
+- [Others](#others)
+- [Architecture](#architecture)
+- [Dataflow Diagram](#dataflow-diagram)
+
+<details>
+<summary>Step-by-step installation of Frontend</summary>
+
+- [Step1: Installation of software Dependencies](#step1-installation-of-software-dependencies)
+- [Step2: Build/Artifact Generation](#step2-buildartifact-generation)
+- [Step3: Application Deployment](#step3-application-deployment)
+
+</details>
+
+- [Monitoring](#monitoring)
+- [Logging](#logging)
+- [Disaster Recovery](#disaster-recovery)
+- [High Availability](#high-availability)
+- [Troubleshooting](#troubleshooting)
+- [FAQs](#faqs)
+- [Contact Information](#contact-information)
+- [References](#references)
+
+</details>
 
 ---
 
 ## Introduction
+This document provides comprehensive software documentation for the **Frontend** web application of the **OT-Microservices** Employee Management System.
 
-This document provides complete, easy-to-understand software documentation for the **Frontend** web application of the **OT-Microservices** project, created from the validated Proof of Concept (PoC).
+Frontend is the ReactJS-based web UI of the **OT-Microservices** Employee Management System. It gives employees and admins a single web interface to create and search employee, attendance, and salary records, instead of calling the backend REST APIs directly. It is stateless, cross-platform, and only needs a JavaScript runtime to build, plus a static file server (`serve`, or NGINX) to run.
 
-The **Frontend** is a web application built using **React.js**. It provides an intuitive graphical user interface (UI) for interacting with underlying backend microservices (Employee, Attendance, and Salary). It runs on port `3000`, is reverse-proxied through **Nginx** on standard port `80`, and is managed automatically as a Linux **systemd** service.
+The frontend does not own any database. It is directly dependent on three backend microservices, and indirectly tied to a fourth:
 
----
-
-## Purpose
-
-| S.No | Purpose                                      | Description                                                                                               |
-| :--: | :------------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
-|  1  | **User Interface for Microservices**   | Acts as the visual portal for users to interact with Employee, Attendance, and Salary microservices.      |
-|  2  | **Employee Management**                | Allows HR and managers to view, add, and search employee profiles.                                        |
-|  3  | **Attendance Tracking**                | Enables employees to record daily check-in and check-out logs and view monthly summaries.                 |
-|  4  | **Salary & Payroll Inspection**        | Allows employees to inspect salary structures, deductions, and download salary slips as PDF files.        |
-|  5  | **Production-Ready PoC Demonstration** | Demonstrates the manual setup, reverse proxy configuration, and systemd service management on a Linux VM. |
+| Service                                                                                | Role                                                | Called directly by frontend?          |
+| :------------------------------------------------------------------------------------- | :-------------------------------------------------- | :------------------------------------ |
+| [Employee API](https://github.com/OT-MICROSERVICES/employee-api) (Go)                   | Employee records                                    | Yes                                   |
+| [Attendance API](https://github.com/OT-MICROSERVICES/attendance-api) (Python)           | Attendance records                                  | Yes                                   |
+| [Salary API](https://github.com/OT-MICROSERVICES/salary-api) (Java)                     | Salary records                                      | Yes                                   |
+| [Notification Worker](https://github.com/OT-MICROSERVICES/notification-worker) (Python) | Emails employees on a schedule using the data above | No — indirect, downstream dependency |
 
 ---
 
-## Key Features
+## Pre-requisites
 
-| S.No | Feature                               | Description                                                                                              |
-| :--: | :------------------------------------ | :------------------------------------------------------------------------------------------------------- |
-|  1  | **Built with React.js**         | Fast, responsive Single Page Application (SPA) running smoothly in modern web browsers.                  |
-|  2  | **Nginx Reverse Proxy**         | Routes standard HTTP web traffic on port`80` to the React app running on port `3000`.                |
-|  3  | **Systemd Service Integration** | Runs as a managed background service that automatically restarts on system reboot or unexpected crashes. |
-|  4  | **Material-UI Components**      | Clean and responsive user interface with styled buttons, forms, and data tables.                         |
-|  5  | **Search and Filter Tables**    | Easily filter, sort, and search employee and attendance records.                                         |
-|  6  | **PDF Slip Download**           | Native export of salary slips and attendance reports to downloadable PDF documents.                      |
-|  7  | **Interactive Visual Charts**   | Visual graphs displaying company workforce and attendance metrics.                                       |
+Before setting up the frontend, ensure the following are available and reachable.
 
----
-
-## Getting Started
-
-### Pre-requisites
-
-| S.No | Tool / Requirement     | Version / Port                    | Description                                                                        |
-| :--: | :--------------------- | :-------------------------------- | :--------------------------------------------------------------------------------- |
-|  1  | **Node.js**      | `v16.x` / `v18.x`             | JavaScript runtime required to install dependencies, build, and run the React app. |
-|  2  | **npm**          | `8.x` or higher                 | Node Package Manager used to install and manage project dependencies.              |
-|  3  | **Nginx**        | `1.18+` / Port `80`           | Web server used as a reverse proxy to serve the frontend application to users.     |
-|  4  | **Git**          | `2.25+`                         | Version control tool used to clone the project repository.                         |
-|  5  | **Backend APIs** | Ports`8080`, `5000`, `8081` | Upstream Employee, Attendance, and Salary REST APIs.                               |
-
-### License Type
-
-| License Type               | Description                                                   | Commercial Use |  Open Source  |
-| :------------------------- | :------------------------------------------------------------ | :------------: | :-----------: |
-| **MIT / Apache 2.0** | Free and open for public use, modification, and distribution. | **Yes** | **Yes** |
+| Dependency               | Version                   | Purpose                                        |
+| :----------------------- | :------------------------ | :--------------------------------------------- |
+| **Node.js**        | 16.15.1                   | Build the React application                    |
+| **npm**            | bundled with Node 16.15.1 | Install packages, run the build                |
+| **NGINX**          | latest (or 1.18+)         | Serve the production build / reverse proxy     |
+| **Employee API**   | latest                    | Must be reachable for employee pages to work   |
+| **Attendance API** | latest                    | Must be reachable for attendance pages to work |
+| **Salary API**     | latest                    | Must be reachable for salary pages to work     |
 
 ---
 
-## Software Overview
+## System Requirements
 
-| Software           | Version         | Purpose                                                                 |
-| :----------------- | :-------------- | :---------------------------------------------------------------------- |
-| **Node.js**  | `16.x / 18.x` | Runtime environment for executing JavaScript code.                      |
-| **npm**      | `8.x+`        | Package manager for managing React libraries.                           |
-| **React.js** | `16.2.0`      | Frontend UI framework.                                                  |
-| **Nginx**    | `1.18.0+`     | Reverse proxy server routing port`80` to port `3000`.               |
-| **Systemd**  | Linux standard  | Service manager keeping the app running continuously in the background. |
+The frontend is a lightweight static React build with no heavy compute requirements.
 
----
-
-## System Requirement
-
-| Component                  | Minimum Requirement (PoC / Testing)       | Recommended (Production)      |
-| :------------------------- | :---------------------------------------- | :---------------------------- |
-| **Operating System** | Ubuntu 20.04 / 22.04 LTS (or Linux-based) | Ubuntu 22.04 LTS              |
-| **Instance Type**    | `t2.small`                              | `t2.medium` / `t3.medium` |
-| **Processor**        | Single-core                               | Dual-core (2 vCPUs)           |
-| **RAM (Memory)**     | 2 GB                                      | 4 GB or higher                |
-| **Disk Space**       | 8 GB                                      | 15 GB or higher               |
-
----
-
-## Important Ports
-
-| Port           | Protocol  | Used By        | Description                                                                   |
-| :------------- | :-------- | :------------- | :---------------------------------------------------------------------------- |
-| **22**   | TCP / SSH | SSH            | Used for secure remote terminal login and VM administration.                  |
-| **80**   | HTTP      | Nginx          | Standard web port used to serve the frontend to users over HTTP.              |
-| **3000** | HTTP      | React.js App   | Internal application port where the React development/runtime server listens. |
-| **8080** | HTTP      | Employee API   | Upstream backend service providing employee records.                          |
-| **5000** | HTTP      | Attendance API | Upstream backend service providing attendance logs.                           |
-| **8081** | HTTP      | Salary API     | Upstream backend service providing salary and payroll calculations.           |
+| Hardware Specifications | Minimum Recommendation                                |
+| :---------------------- | :---------------------------------------------------- |
+| **Processor**     | Dual-core                                             |
+| **RAM**           | 2 GB                                                  |
+| **Disk**          | 5 GB                                                  |
+| **OS**            | Ubuntu (22.04 / 20.04) or any OS with Node.js support |
 
 ---
 
 ## Dependencies
 
-### Run-time Dependency
+### Build time Dependency
 
-| Run-time Dependency                 | Version     | Description                                           |
-| :---------------------------------- | :---------- | :---------------------------------------------------- |
-| **Node.js**                   | `16.15.1` | JavaScript runtime environment.                       |
-| **react / react-dom**         | `^16.2.0` | Core React library for UI rendering.                  |
-| **@material-ui/core**         | `^4.11.0` | Material design UI components and styling.            |
-| **material-table**            | `^1.63.1` | Dynamic data table with search, sort, and pagination. |
-| **formik**                    | `^2.1.4`  | Form management and input validation.                 |
-| **@progress/kendo-react-pdf** | `^3.14.0` | PDF generation tool for salary slips and reports.     |
-| **react-c3js**                | `^0.1.20` | Charting library for graphical data display.          |
+| Name              | Version                   | Description                                                    |
+| :---------------- | :------------------------ | :------------------------------------------------------------- |
+| **Node.js** | 16.15.1                   | Required to install packages and build the React app           |
+| **npm**     | bundled with Node 16.15.1 | Package manager used to install dependencies and run the build |
+
+### Run time Dependency
+
+| Name                       | Version | Description                            |
+| :------------------------- | :------ | :------------------------------------- |
+| **serve (or NGINX)** | latest  | Serves the production`build/` output |
+| **Employee API**     | latest  | Backend service for employee records   |
+| **Attendance API**   | latest  | Backend service for attendance records |
+| **Salary API**       | latest  | Backend service for salary records     |
 
 ### Other Dependency
 
-| Other Dependency         | Version     | Description                          |
-| :----------------------- | :---------- | :----------------------------------- |
-| **Nginx**          | `1.18+`   | Reverse proxy web server.            |
-| **Git**            | `2.25+`   | Code repository management.          |
-| **Employee API**   | `v0.1.0+` | Backend service for employee data.   |
-| **Attendance API** | `v0.1.0+` | Backend service for attendance data. |
-| **Salary API**     | `v0.1.0+` | Backend service for payroll data.    |
+| Name                          | Version | Description                                                                           |
+| :---------------------------- | :------ | :------------------------------------------------------------------------------------ |
+| **Notification Worker** | latest  | Not called directly by the frontend; reads the same data on a schedule to send emails |
 
 ---
 
-## How to Setup/Install Frontend
+## Important Ports
 
-Follow the 15-step installation and setup process from the PoC to configure the frontend on an Ubuntu/Linux server.
+| Inbound Traffic                  | Description     |
+| :------------------------------- | :-------------- |
+| **3000 (or 80 via NGINX)** | Frontend web UI |
 
-### 1. Update Package Index
+| Outbound Traffic | Description    |
+| :--------------- | :------------- |
+| **8080**   | Employee API   |
+| **8081**   | Attendance API |
+| **8082**   | Salary API     |
+
+---
+
+## Others
+
+### Stop Service
 
 ```bash
-sudo apt update
+fuser -k 3000/tcp
 ```
 
-### 2. Install Node.js and npm
+### Repository
+
+[https://github.com/OT-MICROSERVICES/frontend](https://github.com/OT-MICROSERVICES/frontend)
+
+---
+
+## Architecture
+
+The browser loads the React app from the frontend server and makes REST calls to the three backend APIs (Employee API, Attendance API, and Salary API). The Notification Worker is not called by the browser; it separately reads the same data on a schedule to send automated email alerts.
+
+---
+
+## Dataflow Diagram
+
+<img width="2912" height="1156" alt="frontend" src="https://github.com/user-attachments/assets/001b90fa-cd92-4ba6-a96e-cfe41367478f" />
+
+
+---
+
+## Step-by-step installation of Frontend
+
+### Step1: Installation of software Dependencies
+
+#### Build Dependency
 
 ```bash
-sudo apt install nodejs npm -y
-```
-
-### 3. Verify Node.js and npm Installation
-
-```bash
-node --version
-npm --version
-```
-
-### 4. Install Nginx
-
-```bash
-sudo apt install nginx -y
-sudo systemctl status nginx
-```
-
-### 5. Clone the Frontend Repository
-
-```bash
-git clone https://github.com/OT-MICROSERVICES/frontend.git
-cd frontend
-```
-
-### 6. Install Project Dependencies
-
-```bash
+cd ~/OT-Micro/frontend
 npm install
 ```
 
-### 7. Start the Frontend Application (Testing)
+#### Run time Dependency
 
-Run the React application using the legacy OpenSSL provider:
-
-```bash
-export NODE_OPTIONS=--openssl-legacy-provider
-npm start
-```
-
-*The app starts on port `3000`. You can test it by visiting `http://<PUBLIC-IP>:3000`.*
-
-### 8. Configure Nginx as a Reverse Proxy
-
-Create an Nginx configuration file to forward incoming port `80` traffic to the React application on port `3000`:
+The frontend needs the three backend APIs reachable before it is useful. From the machine running the frontend:
 
 ```bash
-sudo nano /etc/nginx/sites-available/frontend
+curl -I http://localhost:8080/api/v1/employee/health
+curl -I http://localhost:8081/api/v1/attendance/health
+curl -I http://localhost:8082/actuator/health
 ```
 
-Add the following configuration:
+If any of these fail, start/fix that service first — see that service's own repository for its setup steps.
 
-```nginx
-server {
-    listen 80;
-    server_name _;
+#### Other Dependency
 
-    location / {
-        proxy_pass http://127.0.0.1:3000;
+Not applicable for this application.
 
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
+---
 
-### 9. Enable the Nginx Configuration
-
-Create a symbolic link in `sites-enabled` and remove the default Nginx site:
+### Step2: Build/Artifact Generation
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/frontend /etc/nginx/sites-enabled/frontend
-sudo rm /etc/nginx/sites-enabled/default
+mkdir -p ~/logs
+fuser -k 3000/tcp 2>/dev/null
+
+cd ~/OT-Micro/frontend
+npm run build
 ```
 
-### 10. Validate Nginx Configuration
+---
 
-Test for syntax errors:
+### Step3: Application Deployment
 
 ```bash
-sudo nginx -t
+nohup npx serve -s build -l 3000 > ~/logs/frontend.log 2>&1 &
 ```
 
-*Expected output: `syntax is ok` and `test is successful`.*
-
-### 11. Reload & Check Status of Nginx
-
-Apply the new configuration:
-
-```bash
-sudo systemctl reload nginx
-sudo systemctl status nginx
-```
-
-### 12. Validate Frontend Through Nginx
-
-Verify that Nginx is listening on port `80` and returning content:
-
-```bash
-sudo ss -lntp | grep ':80'
-curl http://127.0.0.1
-```
-
-### 13. Access Frontend Through Public IP
-
-Open your web browser and navigate to:
+Ensure the application deployed is in a working state:
 
 ```text
-http://<PUBLIC-IP>
+http://localhost:3000/
 ```
 
-The OT-Microservices Frontend dashboard will load over standard port 80.
-
-### 14. Configure Frontend as a System Service
-
-To ensure the frontend keeps running in the background and restarts automatically after reboot, create a systemd service file:
+Open the UI in your browser and confirm employee, attendance, and salary pages load data properly. Equivalent API-level verification checks:
 
 ```bash
-sudo nano /etc/systemd/system/frontend.service
-```
-
-Add the following configuration (replace `ubuntu` with your username if different):
-
-```ini
-[Unit]
-Description=Frontend React Service
-After=network.target
-
-[Service]
-Type=simple
-User=ubuntu
-WorkingDirectory=/home/ubuntu/frontend
-Environment="NODE_OPTIONS=--openssl-legacy-provider"
-ExecStart=/usr/bin/npm start
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-### 15. Reload and Start the Frontend Service
-
-Reload systemd, enable the service on boot, and start it:
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable frontend
-sudo systemctl start frontend
-sudo systemctl status frontend
-```
-
----
-
-## Configuration
-
-### 1. Systemd Service Configuration
-
-The systemd service (`/etc/systemd/system/frontend.service`) manages:
-
-* **Working Directory**: `/home/ubuntu/frontend`
-* **Environment Variable**: `NODE_OPTIONS=--openssl-legacy-provider` (resolves OpenSSL compatibility)
-* **Auto-Restart**: `Restart=always` ensures automatic recovery if the process terminates.
-
-### 2. Nginx Reverse Proxy Configuration
-
-The Nginx configuration (`/etc/nginx/sites-available/frontend`) handles:
-
-* Forwarding port `80` traffic to `http://127.0.0.1:3000`.
-* Passing standard proxy headers (`Host`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-Proto`).
-
----
-
-## Maintenance
-
-Standard maintenance commands:
-
-```bash
-# ----------------------------------------------------
-# 1. To Update to the latest code
-# ----------------------------------------------------
-cd /home/ubuntu/frontend
-git pull origin master
-npm install
-sudo systemctl restart frontend
-
-# ----------------------------------------------------
-# 2. To Restart Services
-# ----------------------------------------------------
-sudo systemctl restart frontend
-sudo systemctl restart nginx
-
-# ----------------------------------------------------
-# 3. To Check Service Status
-# ----------------------------------------------------
-sudo systemctl status frontend
-sudo systemctl status nginx
+curl http://localhost:8080/api/v1/employee/search/all | jq
+curl http://localhost:8081/api/v1/attendance/search | jq
+curl http://localhost:8082/api/v1/salary/search | jq
 ```
 
 ---
 
 ## Monitoring
 
-1. **Check if Frontend Service is Running**:
-   ```bash
-   sudo systemctl status frontend
-   ```
-2. **Check Nginx Reverse Proxy**:
-   ```bash
-   sudo systemctl status nginx
-   sudo ss -lntp | grep ':80'
-   ```
-3. **Check Live Logs**:
-   * **Frontend Service Logs**:
-     ```bash
-     journalctl -u frontend -f
-     ```
-   * **Nginx Access & Error Logs**:
-     ```bash
-     tail -f /var/log/nginx/access.log
-     tail -f /var/log/nginx/error.log
-     ```
-4. **Health Check via Curl**:
-   ```bash
-   curl -I http://127.0.0.1
-   ```
+Basic functional and reachability checks for the frontend:
+
+| Check                           | Command / URL                                             | Expected Result            |
+| :------------------------------ | :-------------------------------------------------------- | :------------------------- |
+| **Frontend UI reachable** | `http://localhost:3000/`                                | Page loads without errors  |
+| **Employee data loads**   | `curl http://localhost:8080/api/v1/employee/search/all` | Returns employee records   |
+| **Attendance data loads** | `curl http://localhost:8081/api/v1/attendance/search`   | Returns attendance records |
+| **Salary data loads**     | `curl http://localhost:8082/api/v1/salary/search`       | Returns salary records     |
+
+---
+
+## Logging
+
+To inspect live application logs generated by `serve`:
+
+```bash
+tail -f ~/logs/frontend.log
+```
 
 ---
 
 ## Disaster Recovery
 
-* **Stateless Application**: The frontend holds no database state. If the VM crashes or is corrupted, all data remains safe in the backend databases.
-* **Rapid Re-deployment**:
-  1. Launch a new Ubuntu VM (`t2.small`).
-  2. Follow the 15-step setup or run a shell script with the same steps.
-  3. Total recovery time is **under 5 minutes**.
-* **Automatic Crash Recovery**: The systemd service has `Restart=always`, so any application-level crash is automatically restarted within seconds.
+* **Stateless Architecture**: The frontend holds no database state or persistent files. All data is securely stored in backend microservice databases.
+* **Rapid Redeployment**:
+  1. In case of VM or process failure, re-run `nohup npx serve -s build -l 3000 > ~/logs/frontend.log 2>&1 &` or launch a fresh container.
+  2. Total recovery time is **under 2 minutes**.
+* **Pre-Built Artifacts**: Production `build/` archives can be stored in object storage (S3/Cloud Storage) for instant retrieval without waiting for compilation.
 
 ---
 
 ## High Availability
 
-* **Multi-Instance Deployment**: Deploy multiple Ubuntu VMs running the frontend service.
-* **Load Balancer**: Place an AWS Application Load Balancer (ALB) or cloud load balancer in front of the VMs on port `80`/`443`.
-* **Health Checks**: Configure ALB health checks to ping `http://<INSTANCE-IP>/` to automatically route traffic only to healthy instances.
+* **Multiple Replicas**: Run 2 or more frontend instances across different availability zones or VMs.
+* **Load Balancer**: Deploy NGINX, Traefik, or an AWS Application Load Balancer (ALB) on port `80`/`443` to distribute user traffic evenly.
+* **Edge CDN**: Cache static assets (`/static/js/`, `/static/css/`) using Cloudflare or AWS CloudFront to reduce server load and provide global high availability.
 
 ---
 
 ## Troubleshooting
 
-| Problem                                                             | Root Cause                                                 | Solution                                                                                                    |
-| :------------------------------------------------------------------ | :--------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------- |
-| **`error:0308010C:digital envelope routines::unsupported`** | Node.js version mismatch with legacy OpenSSL hashing.      | Set`NODE_OPTIONS=--openssl-legacy-provider` in terminal or inside the systemd service file.               |
-| **Port 3000 already in use (`EADDRINUSE`)**                 | An existing`npm` or `node` process is already running. | Find the process:`sudo ss -lntp \| grep :3000`, and stop it using `kill -9 <PID>`.                       |
-| **502 Bad Gateway on Port 80**                                | Nginx is running, but the frontend React app is stopped.   | Check frontend service:`sudo systemctl status frontend`. Restart it: `sudo systemctl restart frontend`. |
-| **Nginx Test Fails (`nginx -t`)**                           | Syntax error in`/etc/nginx/sites-available/frontend`.    | Inspect the file for missing semicolons or braces, then re-test with`sudo nginx -t`.                      |
-| **Cannot access via Public IP in browser**                    | Security Group / Firewall is blocking Port 80.             | In AWS / cloud provider, ensure your Inbound Rules allow HTTP traffic on port`80` from `0.0.0.0/0`.     |
+| Issue                                         | Possible Cause                                    | Resolution                                                                                           |
+| :-------------------------------------------- | :------------------------------------------------ | :--------------------------------------------------------------------------------------------------- |
+| **Blank page after deployment**         | Backend APIs unreachable                          | Verify Employee, Attendance, and Salary API URLs and ensure their health endpoints return`200 OK`. |
+| **`npm install` fails**               | Node.js version mismatch                          | Use Node.js`16.15.1` as pinned in the Dockerfile.                                                  |
+| **Port already in use**                 | Another process is using port 3000                | Run`fuser -k 3000/tcp` to terminate the conflicting process, or map to a different port.           |
+| **Data not showing on a specific page** | That page's backend service is down or unmigrated | Check that specific service's own health endpoint and application logs.                              |
 
 ---
 
 ## FAQs
 
-### 1. Is this application free and open-source?
+**1. Why is the frontend showing a blank page?**
 
-Yes, it is released under the MIT / Apache 2.0 license.
+> One or more of the Employee/Attendance/Salary APIs is unreachable. Check each with `curl` against its health endpoint.
 
-### 2. Can I run the frontend without Nginx?
+**2. Why does `npm run build` fail?**
 
-Yes, you can access the frontend directly on port `3000` (`http://<PUBLIC-IP>:3000`), but using Nginx on port `80` is the recommended standard for production web traffic.
+> Usually a Node.js version mismatch — use `16.15.1` as pinned in the Dockerfile.
 
-### 3. Why is `NODE_OPTIONS=--openssl-legacy-provider` required?
+**3. Does the frontend talk to the Notification Worker?**
 
-Modern versions of Node.js enforce OpenSSL 3.0 algorithms. This environment variable allows React's build tools (Webpack) to run smoothly without cryptographic errors.
+> No. Notification Worker is a separate scheduled job that later reads the data the frontend creates; the frontend never calls it directly.
 
-### 4. How does the frontend restart after a server reboot?
+**4. Can I run the frontend without Docker?**
 
-Because we configured it as a systemd service and ran `sudo systemctl enable frontend`, Linux will automatically start the service on every boot.
+> Yes — run `npm install && npm run build`, then serve the `build/` folder with `serve` or any static file server like NGINX.
 
 ---
 
@@ -432,10 +312,10 @@ Because we configured it as a systemd service and ran `sudo systemctl enable fro
 
 ## References
 
-| Resource                        | Link                                                                                                                                                                                                                                                    |
-| :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Frontend Repository             | [https://github.com/OT-MICROSERVICES/frontend](https://github.com/OT-MICROSERVICES/frontend)                                                                                                                                                             |
-| Node.js Documentation           | [https://nodejs.org/en/download/package-manager](https://nodejs.org/en/download/package-manager)                                                                                                                                                         |
-| NPM Documentation               | [https://docs.npmjs.com/](https://docs.npmjs.com/)                                                                                                                                                                                                       |
-| React Official Documentation    | [https://reactjs.org/docs/getting-started.html](https://reactjs.org/docs/getting-started.html)                                                                                                                                                           |
-| Nginx Documentation             | [https://nginx.org/en/docs/](https://nginx.org/en/docs/)                                                                                                                                                                                                 |
+| Resource                   | Link                                                                                                                                           |
+| :------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend repository        | [https://github.com/OT-MICROSERVICES/frontend](https://github.com/OT-MICROSERVICES/frontend)                                                    |
+| Employee API               | [https://github.com/OT-MICROSERVICES/employee-api](https://github.com/OT-MICROSERVICES/employee-api)                                            |
+| Attendance API             | [https://github.com/OT-MICROSERVICES/attendance-api](https://github.com/OT-MICROSERVICES/attendance-api)                                        |
+| Salary API                 | [https://github.com/OT-MICROSERVICES/salary-api](https://github.com/OT-MICROSERVICES/salary-api)                                                |
+| Notification Worker        | [https://github.com/OT-MICROSERVICES/notification-worker](https://github.com/OT-MICROSERVICES/notification-worker)                              

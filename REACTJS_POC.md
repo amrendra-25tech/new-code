@@ -18,7 +18,6 @@
    - [3.3 Configure Unit Tests and Mocks](#33-configure-unit-tests-and-mocks)
    - [3.4 Execute Unit Tests](#34-execute-unit-tests)
    - [3.5 Generate and Analyze Code Coverage](#35-generate-and-analyze-code-coverage)
-   - [3.6 Verify Production Build](#36-verify-production-build)
 4. [Conclusion](#4-conclusion)
 5. [Contact Information](#5-contact-information)
 6. [References](#6-references)
@@ -72,7 +71,8 @@ Verify the existing test configuration in `package.json`:
 
 Because Create React App includes Jest by default, no extra test runner installation is needed.
 
-<img width="1350" alt="Application Structure Verified" src="docs/screenshots/01-app-structure.png" />
+<img width="1902" height="951" alt="image" src="https://github.com/user-attachments/assets/7606ad5e-b1f5-4637-8689-aa1e64aede17" />
+
 
 ---
 
@@ -96,7 +96,8 @@ Expected output:
 0
 ```
 
-<img width="1350" alt="Dependencies Installed" src="docs/screenshots/02-npm-install.png" />
+<img width="1853" height="116" alt="image" src="https://github.com/user-attachments/assets/ae39e158-1573-4a4b-a7cc-c9fd59ad3e8b" />
+
 
 ---
 
@@ -131,7 +132,8 @@ The test file implements **5 test cases**:
 4. **Empty API Response:** Verifies graceful handling when the API returns an empty list.
 5. **API Failure Handling:** Verifies that the component handles API errors properly.
 
-<img width="1350" alt="Unit Test Configuration" src="docs/screenshots/03-test-file.png" />
+<img width="1867" height="863" alt="image" src="https://github.com/user-attachments/assets/1895a490-8fc2-40aa-a34a-4d4773ef83e6" />
+
 
 ---
 
@@ -163,7 +165,9 @@ Time:        1.85 s
 
 All 5 implemented unit tests passed successfully.
 
-<img width="1350" alt="Unit Tests Execution" src="docs/screenshots/04-test-execution.png" />
+<img width="1542" height="449" alt="image" src="https://github.com/user-attachments/assets/3beab124-599f-4c93-bd93-92e106b8879e" />
+
+
 
 ---
 
@@ -183,38 +187,15 @@ Coverage results for the tested component:
 
 The POC achieves **100% code coverage** for `EmployeeList.js`, exercising all statements, branches, and functions.
 
-<img width="1350" alt="Coverage Report" src="docs/screenshots/05-coverage-report.png" />
+<img width="1728" height="889" alt="image" src="https://github.com/user-attachments/assets/9769fdf0-c0f4-4739-838e-b19764d58911" />
+
 
 ---
 
-### 3.6 Verify Production Build
-
-Verify that the application compiles successfully for production after tests pass:
-
-```bash
-npm run build
-```
-
-Expected output:
-
-```text
-Compiled successfully.
-File sizes after gzip:
-...
-The build folder is ready to be deployed.
-```
-
-An exit code of `0` confirms that the production build succeeds.
-
-<img width="1350" alt="Production Build Verification" src="docs/screenshots/06-build-verify.png" />
-
----
 
 # 4. Conclusion
 
-This Proof of Concept successfully demonstrated Unit Testing for the React frontend application.
-
-The test suite validated component rendering, API requests, success responses, and error handling with all 5 tests passing and achieving 100% coverage on `EmployeeList.js`.
+This Proof of Concept successfully demonstrated Unit Testing for the React frontend application. The test suite validated component rendering, API requests, success responses, and error handling with all 5 tests passing and achieving 100% coverage on `EmployeeList.js`.
 
 **Chosen Tool:**
 **Jest with Create React App (`react-scripts`)** is chosen for our React CI pipeline because it is already integrated, requires zero extra configuration, provides fast in-memory JSDOM testing, and includes built-in coverage reporting.

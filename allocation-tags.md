@@ -37,9 +37,9 @@
 
 This document provides a simple, console-based guide to implement **AWS Cost Allocation Tags**.
 All steps are performed directly using the **AWS Management Console**.
-It covers workload right-sizing, spot instance exploration, tagging using AWS Tag Editor, verification in AWS Resource Explorer, and activating tags in the Billing C
+It covers workload right-sizing, spot instance exploration, tagging using AWS Tag Editor, verification in AWS Resource Explorer, and activating tags in the Billing Console.
 
-https://github.com/SnaatakAllStars/Sprint-1/blob/SCRUM-119-VIKAS/Documentation/Cost_Optimization_Desiging/Cost/AWS_Cost_Allocation_Tags/README.md
+
 
 
 # 2. Prerequisites
@@ -74,12 +74,10 @@ Right-sizing ensures instances match workload traffic and prevents paying for id
 | **4**    | **Check Storage Tier**   | Ensure root volumes use`gp3` instead of older `gp2` disks.                    |
 | **5**    | **Launch Optimized EC2** | Confirm running instance (e.g.,`i-0628df79db03fad30` as `t3.micro`).          |
 
-<details>
-<summary> Click to view Screenshot </summary>
 
-![Resource Details](resource_explorer_details.png)
 
-</details>
+<img width="1857" height="883" alt="allocation tags (3)" src="https://github.com/user-attachments/assets/6deecdd3-a3db-408d-9e44-e3603ade846b" />
+
 
 ---
 
@@ -140,14 +138,7 @@ Use **AWS Tag Editor** under Resource Groups to find and tag resources in bulk.
 | **6**    | **Enter Tag Key & Value** | Enter tag key (e.g.,`key` or standard keys) and value (e.g., `instance`).                                 |
 | **7**    | **Apply Changes**         | Click**Review and apply tag changes** $\rightarrow$ click **Apply changes to all selected**.    |
 
-<details>
-<summary> Click to view Screenshot </summary>
-
-![Tag Editor Search](tag_editor_search.png)
-
-![Tag Editor Manage Tags](tag_editor_manage_tags.png)
-
-</details>
+<img width="1857" height="883" alt="allocation tags (3)" src="https://github.com/user-attachments/assets/a27ad49b-4235-4074-b248-ba73575ca32f" />
 
 ---
 
@@ -162,14 +153,8 @@ Use **AWS Resource Explorer** to verify that the resource is indexed with tags.
 | **3**    | **Confirm Search Result**  | Verify instance`i-0628df79db03fad30` appears in results with tag count.                      |
 | **4**    | **Check Overview**         | Open instance details to confirm**Running** state, `t3.micro` size, and attached tags. |
 
-<details>
-<summary> Click to view Screenshot </summary>
+<img width="1857" height="883" alt="allocation tags (3)" src="https://github.com/user-attachments/assets/238e4f5e-2289-4a7a-b843-7b97a678f434" />
 
-![Resource Explorer Query](resource_explorer_query.png)
-
-![Resource Explorer Details](resource_explorer_details.png)
-
-</details>
 
 ---
 
